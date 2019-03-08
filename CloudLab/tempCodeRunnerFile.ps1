@@ -1,0 +1,1 @@
+New-AzResourceGroupDeployment -ResourceGroupName ANALYTICS-RG01 -Name "$($deploymentName)-Analytics" -TemplateFile .\Analytics.json
