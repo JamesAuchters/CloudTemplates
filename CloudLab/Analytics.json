@@ -4,16 +4,16 @@
     "parameters": {
         "workspaceName": {
             "type": "String",
-            "defaultValue": "OMSWORKSPACE-",
+            "defaultValue": "OMSWORKSPACE",
             "metadata": {
-              "description": "Specifies the name of the workspace."
+                "description": "Specifies the name of the workspace."
             }
         },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
             "metadata": {
-              "description": "Location for all resources."
+                "description": "Location for all resources."
             }
         },
         "sku": {
@@ -30,13 +30,13 @@
         }
     },
     "variables": {
-        "SecuritySolutionName": "concat('solutions_SecurityInsights(', concat(parameters('workspaceName'), guid(parameters('workspaceName'))), ')' )"
+        "workspaceUniqueID":"[concat(parameters('workspaceName'), '-', uniqueString(resourceGroup().id, deployment().name))]"
     },
     "functions": [],
     "resources": [
         {
             "type": "Microsoft.OperationalInsights/workspaces",
-            "name": "[concat(parameters('workspaceName'), guid(parameters('workspaceName')))]",
+            "name": "[variables('workspaceUniqueID')]",
             "apiVersion": "2017-04-26-preview",
             "location": "[parameters('location')]",
             "properties": {
@@ -49,5 +49,10 @@
             }
         }
     ],
-    "outputs": {}
-  }
+    "outputs": {
+        "WorkspaceName": {
+            "type": "string",
+            "value": "[variables('workspaceUniqueID')]"
+        }
+    }
+}

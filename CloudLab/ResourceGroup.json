@@ -1,38 +1,38 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "apiProfile":"2018-06-01-profile",
+    "apiProfile": "2018-06-01-profile",
     "parameters": {
-        "networkRgName":{
+        "networkRgName": {
             "type": "string",
-            "DefaultValue" : "NETWORK-RG01",
+            "DefaultValue": "NETWORK-RG01",
             "metadata": {
                 "description": "A resource group to contain network resources."
             }
         },
-        "analyticsRgName":{
+        "analyticsRgName": {
             "type": "string",
-            "DefaultValue" : "ANALYTICS-RG01",
+            "DefaultValue": "ANALYTICS-RG01",
             "metadata": {
                 "description": "A resource group to contain analytics (OMS) resources."
             }
         },
-        "serverRgName":{
+        "serverRgName": {
             "type": "string",
-            "DefaultValue" : "SERVER-RG01",
+            "DefaultValue": "SERVER-RG01",
             "metadata": {
                 "description": "A resource group to contain generic server resources."
             }
         },
         "templateLocation": {
             "type": "string",
-            "DefaultValue" : "australiasoutheast",
+            "DefaultValue": "australiaeast",
             "allowedValues": [
                 "australiasoutheast",
                 "australiaeast"
             ],
-            "metadata": { 
-                "decription":"The Default Resource Group Location (AU South East/AU East)"
+            "metadata": {
+                "decription": "The Default Resource Group Location (AU South East/AU East)"
             }
         }
     },

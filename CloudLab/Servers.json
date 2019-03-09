@@ -1,0 +1,225 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"adminUsername": {
+			"type": "string",
+			"metadata": {
+				"description": "Username for the Virtual Machine."
+			}
+		},
+		"adminPassword": {
+			"type": "securestring",
+			"metadata": {
+				"description": "Password for the Virtual Machine."
+			}
+		},
+		"DomainControllerName": {
+			"type": "string",
+			"defaultValue": "svdcprod01",
+			"metadata": {
+				"description": "Name for the Domain Controller"
+			}
+		},
+		"windowsOSVersion": {
+			"type": "string",
+			"defaultValue": "2016-Datacenter",
+			"allowedValues": [
+				"2008-R2-SP1",
+				"2012-Datacenter",
+				"2012-R2-Datacenter",
+				"2016-Nano-Server",
+				"2016-Datacenter-with-Containers",
+				"2016-Datacenter",
+				"2019-Datacenter"
+			],
+			"metadata": {
+				"description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
+			}
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
+		"vnetName": {
+			"type": "string",
+			"DefaultValue": "CORE-VNET01",
+			"metadata": {
+				"description": "The base name for a core virtual network"
+			}
+		},
+		"vnetRGName": {
+			"type": "string",
+			"DefaultValue": "NETWORK-RG01",
+			"metadata": {
+				"description": "The RG for the used virtual network"
+			}
+		},
+		"diagnosticsStorageAccount": {
+			"type": "string",
+			"defaultValue": "vmdiagnosticstorage01",
+			"metadata": {
+				"description": "Name of the storage account used for VM boot diagnostics"
+			}
+		},
+		"diagnosticstorageAccountType": {
+			"type": "string",
+			"defaultValue": "Standard_LRS",
+			"metadata": {
+				"description": "Storage account type"
+			}
+		},
+		"domainControllerSubnet": {
+			"type": "string",
+			"defaultValue": "Restricted",
+			"metadata": {
+				"description": "The named subnet that the domain controller will be connected to."
+			}
+		},
+		"DomainControllerAvailabilitySetName": {
+			"type": "string",
+			"defaultValue": "AD-AVSET01",
+			"metadata": {
+				"description": "The name to be used for the Domain controller availability set."
+			}
+		}
+	},
+	"variables": {
+		"publicIpDns-DomainController": "[concat(parameters('DomainControllerName'), '-', uniqueString(resourceGroup().id, deployment().name) )]",
+		"DomainControllerNicName": "[concat(parameters('DomainControllerName'), '-Nic')]",
+		"DomainControllerPubIPName": "[concat(parameters('DomainControllerName'), '-PubIP')]",
+		"DomainControllersubnetRef": "[resourceId(parameters('vnetRGName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'),  parameters('domainControllerSubnet'))]"
+	},
+	"functions": [],
+	"resources": [
+		{
+			"type": "Microsoft.Storage/storageAccounts",
+			"apiVersion": "2017-06-01",
+			"name": "[parameters('diagnosticsStorageAccount')]",
+			"location": "[parameters('location')]",
+			"kind": "Storage",
+			"sku": {
+				"name": "[parameters('diagnosticstorageAccountType')]"
+			}
+		},
+		{
+			"type": "Microsoft.Network/publicIPAddresses",
+			"apiVersion": "2017-09-01",
+			"name": "[variables('DomainControllerPubIPName')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"publicIPAllocationMethod": "Dynamic",
+				"dnsSettings": {
+					"domainNameLabel": "[variables('publicIpDns-DomainController')]"
+				}
+			}
+		},
+		{
+			"apiVersion": "2017-09-01",
+			"type": "Microsoft.Network/networkInterfaces",
+			"name": "[variables('DomainControllerNicName')]",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[variables('DomainControllerPubIPName')]"
+			],
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig1",
+						"properties": {
+							"privateIPAllocationMethod": "Dynamic",
+							"publicIPAddress": {
+								"id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('DomainControllerPubIPName'))]"
+							},
+							"subnet": {
+								"id": "[variables('DomainControllersubnetRef')]"
+							}
+						}
+					}
+				]
+			}
+		},
+		{
+			"apiVersion": "2017-03-30",
+			"type": "Microsoft.Compute/availabilitySets",
+			"location": "[parameters('location')]",
+			"name": "[parameters('DomainControllerAvailabilitySetName')]",
+			"properties": {
+				"PlatformUpdateDomainCount": 20,
+				"PlatformFaultDomainCount": 2
+			},
+			"sku": {
+				"name": "Aligned"
+			}
+		},
+		{
+			"type": "Microsoft.Compute/virtualMachines",
+			"name": "[parameters('DomainControllerName')]",
+			"apiVersion": "2017-03-30",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkInterfaces', variables('DomainControllerNicName'))]",
+				"[resourceId('Microsoft.Compute/availabilitySets', parameters('DomainControllerAvailabilitySetName'))]"
+			],
+			"properties": {
+				"hardwareProfile": {
+					"vmSize": "Standard_D2_v2"
+				},
+				"availabilitySet": {
+					"id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('DomainControllerAvailabilitySetName'))]"
+				},
+				"osProfile": {
+					"computerName": "[parameters('DomainControllerName')]",
+					"adminUsername": "[parameters('adminUsername')]",
+					"adminPassword": "[parameters('adminPassword')]"
+				},
+				"storageProfile": {
+					"imageReference": {
+						"publisher": "MicrosoftWindowsServer",
+						"offer": "WindowsServer",
+						"sku": "2016-Datacenter",
+						"version": "latest"
+					},
+					"osDisk": {
+						"name": "[concat(parameters('DomainControllerName'),'_OSDisk')]",
+						"caching": "ReadWrite",
+						"createOption": "FromImage",
+						"managedDisk": {
+							"storageAccountType": "Standard_LRS"
+						}
+					},
+					"dataDisks": [
+						{
+							"name": "[concat(parameters('DomainControllerName'), '_DataDisk')]",
+							"caching": "None",
+							"createOption": "Empty",
+							"diskSizeGB": 100,
+							"managedDisk": {
+								"storageAccountType": "Standard_LRS"
+							},
+							"lun": 0
+						}
+					]
+				},
+				"networkProfile": {
+					"networkInterfaces": [
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', variables('DomainControllerNicName'))]"
+						}
+					]
+				},
+				"diagnosticsProfile": {
+					"bootDiagnostics": {
+						"enabled": true,
+						"storageUri": "[reference(resourceId(resourcegroup().name, 'Microsoft.Storage/storageAccounts/', parameters('diagnosticsStorageAccount')), '2017-06-01').primaryEndpoints.blob]"
+					}
+				}
+			},
+			"resources": []
+		}
+	],
+	"outputs": {}
+}
