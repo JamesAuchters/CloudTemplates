@@ -58,7 +58,7 @@ configuration DSC-Create-AD-Domain
 
         xWaitforDisk Disk2
         {
-            DiskId =  = "2"
+            DiskId = "2"
             RetryIntervalSec =$RetryIntervalSec
             RetryCount = $RetryCount
         }

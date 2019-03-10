@@ -30,7 +30,7 @@
 		},
 		"DSCResourceLocation":{
 			"type": "string",
-			"defaultValue": "",
+			"defaultValue": "https://github.com/JamesAuchters/CloudTemplates/raw/master/CloudLab",
 			"metadata": {
 				"description": "Prefix for https endpoint that stores DSC resources."
 			}
@@ -239,38 +239,39 @@
 					}
 				}
 			},
-			"resources": []
-		},
-		{
-			"type": "extensions",
-			"name": "CreateADDomain",
-			"apiVersion": "2017-03-30",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"[resourceId('Microsoft.Compute/virtualMachines', variables('DomainControllerName'))]"
-			],
-			"properties": {
-				"publisher": "Microsoft.Powershell",
-				"type": "DSC",
-				"typeHandlerVersion": "2.19",
-				"autoUpgradeMinorVersion": true,
-				"settings": {
-					"ModulesUrl": "[concat(parameters('DSCResourceLocation'), '/DSC-Create-AD-Domain.zip', parameters('DSCResourceLocationSASToken'))]",
-					"ConfigurationFunction": "DSC-Create-AD-Domain.ps1\\DSC-Create-AD-Domain",
-					"Properties": {
-						"DomainName": "[parameters('domainName')]",
-						"AdminCreds": {
-							"UserName": "[parameters('adminUsername')]",
-							"Password": "PrivateSettingsRef:AdminPassword"
+			"resources": [
+				{
+					"type": "extensions",
+					"name": "CreateADDomain",
+					"apiVersion": "2017-03-30",
+					"location": "[parameters('location')]",
+					"dependsOn": [
+						"[resourceId('Microsoft.Compute/virtualMachines', parameters('DomainControllerName'))]"
+					],
+					"properties": {
+						"publisher": "Microsoft.Powershell",
+						"type": "DSC",
+						"typeHandlerVersion": "2.19",
+						"autoUpgradeMinorVersion": true,
+						"settings": {
+							"ModulesUrl": "[concat(parameters('DSCResourceLocation'), '/DSC-Create-AD-Domain.zip', parameters('DSCResourceLocationSASToken'))]",
+							"ConfigurationFunction": "DSC-Create-AD-Domain.ps1\\DSC-Create-AD-Domain",
+							"Properties": {
+								"DomainName": "[parameters('domainName')]",
+								"AdminCreds": {
+									"UserName": "[parameters('adminUsername')]",
+									"Password": "PrivateSettingsRef:AdminPassword"
+								}
+							}
+						},
+						"protectedSettings": {
+							"Items": {
+								"AdminPassword": "[parameters('adminPassword')]"
+							}
 						}
 					}
-				},
-				"protectedSettings": {
-					"Items": {
-						"AdminPassword": "[parameters('adminPassword')]"
-					}
 				}
-			}
+			]
 		}
 	],
 	"outputs": {}
