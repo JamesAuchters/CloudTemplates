@@ -14,7 +14,7 @@ configuration DSC-Create-AD-Domain
     
     Import-DscResource -ModuleName xActiveDirectory, xStorage, xNetworking, xPSDesiredStateConfiguration, xPendingReboot
     [System.Management.Automation.PSCredential ]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
-    $Interface=Get-NetAdapter|Where Name -Like "Ethernet*"|Select-Object -First 1
+    $Interface=Get-NetAdapter|Where-object Name -Like "Ethernet*"|Select-Object -First 1
     $InterfaceAlias=$($Interface.Name)
 
     Node localhost

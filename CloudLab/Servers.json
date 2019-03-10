@@ -2,30 +2,22 @@
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"OMSWorkspaceResourceId":{
+			"type": "string",
+			"metadata": {
+				"description": "The resource ID of the workspace which all resources will be onboarded to."
+			}
+		},
 		"adminUsername": {
 			"type": "string",
 			"metadata": {
-				"description": "Username for the Virtual Machine."
+				"description": "Username for all Virtual Machines."
 			}
 		},
 		"adminPassword": {
 			"type": "securestring",
 			"metadata": {
-				"description": "Password for the Virtual Machine."
-			}
-		},
-		"DomainControllerName": {
-			"type": "string",
-			"defaultValue": "svdcprod01",
-			"metadata": {
-				"description": "Name for the Domain Controller"
-			}
-		},
-		"DomainName":{
-			"type": "string",
-			"defaultValue": "corp.contoso.com",
-			"metadata": {
-				"description": "FQDN for the Active Directory domain to be created"
+				"description": "Password for all Virtual Machines."
 			}
 		},
 		"DSCResourceLocation":{
@@ -40,22 +32,6 @@
 			"defaultValue": "",
 			"metadata": {
 				"description": "SAS token to access files stored within blob storage"
-			}
-		},
-		"windowsOSVersion": {
-			"type": "string",
-			"defaultValue": "2016-Datacenter",
-			"allowedValues": [
-				"2008-R2-SP1",
-				"2012-Datacenter",
-				"2012-R2-Datacenter",
-				"2016-Nano-Server",
-				"2016-Datacenter-with-Containers",
-				"2016-Datacenter",
-				"2019-Datacenter"
-			],
-			"metadata": {
-				"description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
 			}
 		},
 		"location": {
@@ -93,9 +69,23 @@
 				"description": "Storage account type"
 			}
 		},
+		"DomainControllerName": {
+			"type": "string",
+			"defaultValue": "svdcprod01",
+			"metadata": {
+				"description": "Name for the Domain Controller"
+			}
+		},
+		"DomainName":{
+			"type": "string",
+			"defaultValue": "corp.contoso.com",
+			"metadata": {
+				"description": "FQDN for the Active Directory domain to be created"
+			}
+		},
 		"domainControllerSubnet": {
 			"type": "string",
-			"defaultValue": "Restricted",
+			"defaultValue": "Private",
 			"metadata": {
 				"description": "The named subnet that the domain controller will be connected to."
 			}
@@ -106,13 +96,73 @@
 			"metadata": {
 				"description": "The name to be used for the Domain controller availability set."
 			}
+		},
+		"DomainControllerSize":{
+			"type": "string",
+			"defaultValue": "Standard_D2_v2",
+			"metadata": {
+				"description": "The VM Size to be used for the Domain controller."
+			}
+		},
+		"ClientAvailabilitySetName": {
+			"type": "string",
+			"defaultValue": "CLIENT-AVSET01",
+			"metadata": {
+				"description": "The name to be used for the Client operating system availability set."
+			}
+		},
+		"ClientWin7Name": {
+			"type": "string",
+			"defaultValue": "PCW7",
+			"metadata": {
+				"description": "Name for the Deployed Windows 7 VM. "
+			}
+		},
+		"ClientWin7Subnet": {
+			"type": "string",
+			"defaultValue": "Private",
+			"metadata": {
+				"description": "The named subnet that the Windows 7 Client will be connected to."
+			}
+		},
+		"ClientWin7Size": {
+			"type": "string",
+			"defaultValue": "Standard_D2_v3",
+			"metadata": {
+				"description": "The VM Size to be used for the Windows 7 VM."
+			}
+		},
+		"ClientWin10Name": {
+			"type": "string",
+			"defaultValue": "PCW10",
+			"metadata": {
+				"description": "Name for the Deployed Windows 10 VM. "
+			}
+		},
+		"ClientWin10Subnet": {
+			"type": "string",
+			"defaultValue": "Private",
+			"metadata": {
+				"description": "The named subnet that the Windows 10 Client will be connected to."
+			}
+		},
+		"ClientWin10Size": {
+			"type": "string",
+			"defaultValue": "Standard_D2_v3",
+			"metadata": {
+				"description": "The VM Size to be used for the Windows 10 VM."
+			}
 		}
 	},
 	"variables": {
-		"publicIpDns-DomainController": "[concat(parameters('DomainControllerName'), '-', uniqueString(resourceGroup().id, deployment().name) )]",
+		"DomainControllerpublicIpDns": "[concat(parameters('DomainControllerName'), '-', uniqueString(resourceGroup().id, deployment().name) )]",
 		"DomainControllerNicName": "[concat(parameters('DomainControllerName'), '-Nic')]",
 		"DomainControllerPubIPName": "[concat(parameters('DomainControllerName'), '-PubIP')]",
-		"DomainControllersubnetRef": "[resourceId(parameters('vnetRGName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'),  parameters('domainControllerSubnet'))]"
+		"DomainControllersubnetRef": "[resourceId(parameters('vnetRGName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'),  parameters('domainControllerSubnet'))]",
+		"ClientWin7NicName": "[concat(parameters('ClientWin7Name'), '-Nic')]",
+		"ClientWin7subnetRef": "[resourceId(parameters('vnetRGName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'),  parameters('ClientWin7Subnet'))]",
+		"ClientWin10NicName": "[concat(parameters('ClientWin10Name'), '-Nic')]",
+		"ClientWin10subnetRef": "[resourceId(parameters('vnetRGName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'),  parameters('ClientWin10Subnet'))]"
 	},
 	"functions": [],
 	"resources": [
@@ -134,9 +184,59 @@
 			"properties": {
 				"publicIPAllocationMethod": "Dynamic",
 				"dnsSettings": {
-					"domainNameLabel": "[variables('publicIpDns-DomainController')]"
+					"domainNameLabel": "[variables('DomainControllerpublicIpDns')]"
 				}
-			}
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/publicIPAddresses', variables('DomainControllerPubIPName') )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"logs": [ 
+							{
+								"category": "DDoSProtectionNotifications",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							},
+							{
+								"category": "DDoSMitigationFlowLogs",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							},
+							{
+								"category": "DDoSMitigationReports",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							}
+						],
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"apiVersion": "2017-09-01",
@@ -161,7 +261,31 @@
 						}
 					}
 				]
-			}
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkInterfaces', variables('DomainControllerNicName') )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"apiVersion": "2017-03-30",
@@ -183,11 +307,12 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[resourceId('Microsoft.Network/networkInterfaces', variables('DomainControllerNicName'))]",
-				"[resourceId('Microsoft.Compute/availabilitySets', parameters('DomainControllerAvailabilitySetName'))]"
+				"[resourceId('Microsoft.Compute/availabilitySets', parameters('DomainControllerAvailabilitySetName'))]",
+				"[resourceId('Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccount'))]"
 			],
 			"properties": {
 				"hardwareProfile": {
-					"vmSize": "Standard_D2_v2"
+					"vmSize": "[parameters('DomainControllerSize')]"
 				},
 				"availabilitySet": {
 					"id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('DomainControllerAvailabilitySetName'))]"
@@ -195,7 +320,12 @@
 				"osProfile": {
 					"computerName": "[parameters('DomainControllerName')]",
 					"adminUsername": "[parameters('adminUsername')]",
-					"adminPassword": "[parameters('adminPassword')]"
+					"adminPassword": "[parameters('adminPassword')]",
+					"windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+						"provisionVmAgent": true,
+						"timeZone": "AUS Eastern Standard Time"
+                    }
 				},
 				"storageProfile": {
 					"imageReference": {
@@ -205,7 +335,7 @@
 						"version": "latest"
 					},
 					"osDisk": {
-						"name": "[concat(parameters('DomainControllerName'),'_OSDisk')]",
+						"name": "[concat(parameters('DomainControllerName'),'-OSDisk')]",
 						"caching": "ReadWrite",
 						"createOption": "FromImage",
 						"managedDisk": {
@@ -214,7 +344,7 @@
 					},
 					"dataDisks": [
 						{
-							"name": "[concat(parameters('DomainControllerName'), '_DataDisk')]",
+							"name": "[concat(parameters('DomainControllerName'), '-DataDisk')]",
 							"caching": "None",
 							"createOption": "Empty",
 							"diskSizeGB": 100,
@@ -242,37 +372,291 @@
 			"resources": [
 				{
 					"type": "extensions",
-					"name": "CreateADDomain",
-					"apiVersion": "2017-03-30",
+					"name": "OMSExtension",
+					"apiVersion": "2015-06-15",
 					"location": "[parameters('location')]",
 					"dependsOn": [
-						"[resourceId('Microsoft.Compute/virtualMachines', parameters('DomainControllerName'))]"
+					  	"[concat('Microsoft.Compute/virtualMachines/', parameters('DomainControllerName'))]"
 					],
 					"properties": {
-						"publisher": "Microsoft.Powershell",
-						"type": "DSC",
-						"typeHandlerVersion": "2.19",
-						"autoUpgradeMinorVersion": true,
-						"settings": {
-							"ModulesUrl": "[concat(parameters('DSCResourceLocation'), '/DSC-Create-AD-Domain.zip', parameters('DSCResourceLocationSASToken'))]",
-							"ConfigurationFunction": "DSC-Create-AD-Domain.ps1\\DSC-Create-AD-Domain",
-							"Properties": {
-								"DomainName": "[parameters('domainName')]",
-								"AdminCreds": {
-									"UserName": "[parameters('adminUsername')]",
-									"Password": "PrivateSettingsRef:AdminPassword"
-								}
-							}
-						},
-						"protectedSettings": {
-							"Items": {
-								"AdminPassword": "[parameters('adminPassword')]"
-							}
-						}
+						"publisher": "Microsoft.EnterpriseCloud.Monitoring",
+					  	"type": "MicrosoftMonitoringAgent",
+					  	"typeHandlerVersion": "1.0",
+					  	"autoUpgradeMinorVersion": true,
+					  	"settings": {
+							"workspaceId": "[reference(parameters('OMSWorkspaceResourceId'), '2017-04-26-preview').customerId]"
+					  	},
+					  	"protectedSettings": {
+							"workspaceKey": "[listKeys(parameters('OMSWorkspaceResourceId'), '2015-03-20').primarySharedKey]"
+					  	}
 					}
 				}
 			]
-		}
+		},
+		{
+			"apiVersion": "2017-03-30",
+			"type": "Microsoft.Compute/availabilitySets",
+			"location": "[parameters('location')]",
+			"name": "[parameters('ClientAvailabilitySetName')]",
+			"properties": {
+				"PlatformUpdateDomainCount": 20,
+				"PlatformFaultDomainCount": 2
+			},
+			"sku": {
+				"name": "Aligned"
+			}
+		},
+		{
+			"apiVersion": "2017-09-01",
+			"type": "Microsoft.Network/networkInterfaces",
+			"name": "[variables('ClientWin7NicName')]",
+			"location": "[parameters('location')]",
+			"dependsOn": [],
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig1",
+						"properties": {
+							"privateIPAllocationMethod": "Dynamic",
+							"subnet": {
+								"id": "[variables('ClientWin7subnetRef')]"
+							}
+						}
+					}
+				]
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkInterfaces', variables('ClientWin7NicName') )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+            "name": "[parameters('ClientWin7Name')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2018-06-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+				"[concat('Microsoft.Network/networkInterfaces/', variables('ClientWin7NicName'))]",
+				"[resourceId('Microsoft.Compute/availabilitySets', parameters('ClientAvailabilitySetName'))]",
+				"[resourceId('Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccount'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('ClientWin7Size')]"
+				},
+				"availabilitySet": {
+					"id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('ClientAvailabilitySetName'))]"
+				},
+                "storageProfile": {
+                    "osDisk": {
+						"name": "[concat(parameters('ClientWin7Name'),'-OSDisk')]",
+						"caching": "ReadWrite",
+						"createOption": "FromImage",
+						"managedDisk": {
+							"storageAccountType": "Standard_LRS"
+						}
+                    },
+                    "imageReference": {
+                        "publisher": "microsoftvisualstudio",
+                        "offer": "Windows",
+                        "sku": "Win7-SP1-Ent-N-x64",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ClientWin7NicName'))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('ClientWin7Name')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+						"provisionVmAgent": true,
+						"timeZone": "AUS Eastern Standard Time"
+                    }
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId(resourcegroup().name, 'Microsoft.Storage/storageAccounts/', parameters('diagnosticsStorageAccount')), '2017-06-01').primaryEndpoints.blob]"
+                    }
+                }
+			},
+			"resources": [
+				{
+					"type": "extensions",
+					"name": "OMSExtension",
+					"apiVersion": "2015-06-15",
+					"location": "[parameters('location')]",
+					"dependsOn": [
+					  	"[concat('Microsoft.Compute/virtualMachines/', parameters('ClientWin7Name'))]"
+					],
+					"properties": {
+						"publisher": "Microsoft.EnterpriseCloud.Monitoring",
+					  	"type": "MicrosoftMonitoringAgent",
+					  	"typeHandlerVersion": "1.0",
+					  	"autoUpgradeMinorVersion": true,
+					  	"settings": {
+							"workspaceId": "[reference(parameters('OMSWorkspaceResourceId'), '2017-04-26-preview').customerId]"
+					  	},
+					  	"protectedSettings": {
+							"workspaceKey": "[listKeys(parameters('OMSWorkspaceResourceId'), '2015-03-20').primarySharedKey]"
+					  	}
+					}
+				}
+			]
+		},
+		{
+			"apiVersion": "2017-09-01",
+			"type": "Microsoft.Network/networkInterfaces",
+			"name": "[variables('ClientWin10NicName')]",
+			"location": "[parameters('location')]",
+			"dependsOn": [],
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig1",
+						"properties": {
+							"privateIPAllocationMethod": "Dynamic",
+							"subnet": {
+								"id": "[variables('ClientWin10subnetRef')]"
+							}
+						}
+					}
+				]
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkInterfaces', variables('ClientWin10NicName') )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+            "name": "[parameters('ClientWin10Name')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2018-06-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+				"[concat('Microsoft.Network/networkInterfaces/', variables('ClientWin10NicName'))]",
+				"[resourceId('Microsoft.Compute/availabilitySets', parameters('ClientAvailabilitySetName'))]",
+				"[resourceId('Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccount'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('ClientWin10Size')]"
+				},
+				"availabilitySet": {
+					"id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('ClientAvailabilitySetName'))]"
+				},
+                "storageProfile": {
+					"osDisk": {
+						"name": "[concat(parameters('ClientWin10Name'),'-OSDisk')]",
+						"caching": "ReadWrite",
+						"createOption": "FromImage",
+						"managedDisk": {
+							"storageAccountType": "Standard_LRS"
+						}
+                    },
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsDesktop",
+                        "offer": "Windows-10",
+                        "sku": "rs5-pro",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ClientWin10NicName'))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('ClientWin10Name')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+						"provisionVmAgent": true,
+						"timeZone": "AUS Eastern Standard Time"
+                    }
+                },
+                "licenseType": "Windows_Client",
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId(resourcegroup().name, 'Microsoft.Storage/storageAccounts/', parameters('diagnosticsStorageAccount')), '2017-06-01').primaryEndpoints.blob]"
+                    }
+                }
+			},
+			"resources": [
+				{
+					"type": "extensions",
+					"name": "OMSExtension",
+					"apiVersion": "2015-06-15",
+					"location": "[parameters('location')]",
+					"dependsOn": [
+					  	"[concat('Microsoft.Compute/virtualMachines/', parameters('ClientWin10Name'))]"
+					],
+					"properties": {
+						"publisher": "Microsoft.EnterpriseCloud.Monitoring",
+					  	"type": "MicrosoftMonitoringAgent",
+					  	"typeHandlerVersion": "1.0",
+					  	"autoUpgradeMinorVersion": true,
+					  	"settings": {
+							"workspaceId": "[reference(parameters('OMSWorkspaceResourceId'), '2017-04-26-preview').customerId]"
+					  	},
+					  	"protectedSettings": {
+							"workspaceKey": "[listKeys(parameters('OMSWorkspaceResourceId'), '2015-03-20').primarySharedKey]"
+					  	}
+					}
+				}
+			]
+        }
 	],
 	"outputs": {}
 }

@@ -30,13 +30,13 @@
         }
     },
     "variables": {
-        "workspaceUniqueID":"[concat(parameters('workspaceName'), '-', uniqueString(resourceGroup().id, deployment().name))]"
+        "workspaceUniqueName":"[concat(parameters('workspaceName'), '-', uniqueString(resourceGroup().id, deployment().name))]"
     },
     "functions": [],
     "resources": [
         {
             "type": "Microsoft.OperationalInsights/workspaces",
-            "name": "[variables('workspaceUniqueID')]",
+            "name": "[variables('workspaceUniqueName')]",
             "apiVersion": "2017-04-26-preview",
             "location": "[parameters('location')]",
             "properties": {
@@ -50,9 +50,9 @@
         }
     ],
     "outputs": {
-        "WorkspaceName": {
+        "WorkspaceResourceId":{
             "type": "string",
-            "value": "[variables('workspaceUniqueID')]"
+            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceUniqueName'))]"
         }
     }
 }
