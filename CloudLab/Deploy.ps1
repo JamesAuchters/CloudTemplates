@@ -4,10 +4,12 @@ $deploymentName = "CloudLabDeployment-$(Get-Date -Format hhmm-ddMMyyyy)"
 Write-Host "Logging in..." -ForegroundColor Green
 Login-AzAccount;
 
-New-AzDeployment  -name "$($deploymentName)-RGDeployment" -TemplateFile ResourceGroup.json -Location australiaeast
+New-AzDeployment  -name "$deploymentName-RGDeployment" -TemplateFile ResourceGroup.json -Location australiaeast
 
-$AnalyticsDeployment = New-AzResourceGroupDeployment -ResourceGroupName ANALYTICS-RG01 -Name "$($deploymentName)-Analytics" -TemplateFile .\Analytics.json
+$cloudShellDeployment = New-AzResourceGroupDeployment -ResourceGroupName CLOUDSHELL-RG01 -Name "$deploymentName-CloudShell"  -TemplateFile .\CloudShell.json
 
-$NetworkDeployment = New-AzResourceGroupDeployment -ResourceGroupName Network-RG01 -Name "$($deploymentName)-Network" -TemplateFile .\NetworkResources.json -OMSWorkspaceResourceId $AnalyticsDeployment.outputs['workspaceResourceId'].value
+$AnalyticsDeployment = New-AzResourceGroupDeployment -ResourceGroupName ANALYTICS-RG01 -Name "$deploymentName-Analytics" -TemplateFile .\Analytics.json
 
-$ServerDeployment = New-AzResourceGroupDeployment -ResourceGroupName SERVER-RG01 -Name "$($deploymentName)-Servers" -TemplateFile .\servers.json -OMSWorkspaceResourceId $AnalyticsDeployment.outputs['workspaceResourceId'].value
+$NetworkDeployment = New-AzResourceGroupDeployment -ResourceGroupName Network-RG01 -Name "$deploymentName-Network" -TemplateFile .\NetworkResources.json -OMSWorkspaceResourceId $AnalyticsDeployment.outputs['workspaceResourceId'].value
+
+$ServerDeployment = New-AzResourceGroupDeployment -ResourceGroupName SERVER-RG01 -Name "$deploymentName-Servers" -TemplateFile .\servers.json -OMSWorkspaceResourceId $AnalyticsDeployment.outputs['workspaceResourceId'].value
