@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
+		"StorageAccountName": {
+			"type": "string",
+			"defaultValue": "azurebootcampstorage",
+			"metadata": {
+				"description": "Name of the storage account used for VM boot diagnostics"
+			}
+		},
+		"storageAccountType": {
+			"type": "string",
+			"defaultValue": "Standard_LRS",
+			"metadata": {
+				"description": "Storage account type"
+			}
+		}
+	},
+	"variables": {},
+	"functions": [],
+	"resources": [
+		{
+			"type": "Microsoft.Storage/storageAccounts",
+			"apiVersion": "2017-06-01",
+			"name": "[parameters('StorageAccountName')]",
+			"location": "[parameters('location')]",
+			"kind": "Storage",
+			"sku": {
+				"name": "[parameters('storageAccountType')]"
+			}
+		}
+	],
+	"outputs": {}
+}
