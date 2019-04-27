@@ -1,9 +1,3 @@
-# Starter pipeline
-
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - master
 
@@ -12,11 +6,7 @@ pool:
 
 steps:
 
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
 - task: AzureCLI@1
   inputs:
     connectedServiceNameARM: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
     scriptPath: 'AzureBootCamp/ResourceGroup.sh'
-
