@@ -11,10 +11,13 @@ steps:
   inputs:
     connectedServiceNameARM: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
     scriptLocation: 'inlineScript'
-    inlineScript: 'az group create \
-    --name AzureBootCamp-RG01 \
-    --location australiaeast \
-    az group deployment create --resource-group AzureBootCamp-RG01 --template-file ./AzureBootCamp/StorageAccounts.json'
+    inlineScript: 'az group create --name AzureBootCamp-RG01 --location australiaeast'
+
+- task: AzureCLI@1
+  inputs:
+    connectedServiceNameARM: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az group deployment create --resource-group AzureBootCamp-RG01 --template-file ./AzureBootCamp/StorageAccounts.json'
 
 - task: AzSKSVTs@3
   inputs:
