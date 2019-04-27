@@ -13,9 +13,8 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: 'az group create \
     --name AzureBootCamp-RG01 \
-    --location australiaeast
-
-az group deployment create --resource-group AzureBootCamp-RG01 --template-file ./AzureBootCamp/StorageAccounts.json'
+    --location australiaeast \
+    az group deployment create --resource-group AzureBootCamp-RG01 --template-file ./AzureBootCamp/StorageAccounts.json'
 
 - task: AzSKSVTs@3
   inputs:
