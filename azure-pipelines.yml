@@ -10,3 +10,11 @@ steps:
   inputs:
     connectedServiceNameARM: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
     scriptPath: 'AzureBootCamp/ResourceGroup.sh'
+
+- task: AzSKSVTs@3
+  inputs:
+    ConnectedServiceNameARM: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
+    GenerateMethodParameterSetSelection: 'ResourceGroupName'
+    ResourceGroupName: 'AzureBootCamp-RG01'
+    SubscriptionId: '	 aa95139a-399b-41c9-af0c-31aa4cc6c498'
+    EnableOMSLogging: false
