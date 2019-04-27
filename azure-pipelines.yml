@@ -15,7 +15,7 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- task: AzureCLI@1
+- task: Create Resource Group
   inputs:
     connectedServiceNameARM: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
     scriptPath: 'AzureBootCamp/ResourceGroup.sh'
