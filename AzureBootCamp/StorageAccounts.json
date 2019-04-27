@@ -11,7 +11,7 @@
 		},
 		"StorageAccountName": {
 			"type": "string",
-			"defaultValue": "azurebootcampstorage",
+			"defaultValue": "iowasjklioniosj",
 			"metadata": {
 				"description": "Name of the storage account used for VM boot diagnostics"
 			}
