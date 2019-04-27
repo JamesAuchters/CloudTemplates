@@ -10,3 +10,8 @@ steps:
   inputs:
     connectedServiceNameARM: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
     scriptPath: 'AzureBootCamp/ResourceGroup.sh'
+
+- task: AzurePolicyCheckGate@0
+  inputs:
+    ConnectedServiceName: 'MPN - Mahmoud Draj(aa95139a-399b-41c9-af0c-31aa4cc6c498)'
+    ResourceGroupName: 'AzureBootCamp-RG01'
