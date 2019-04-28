@@ -21,7 +21,7 @@ steps:
 
 - task: AzSKSVTs@3
   inputs:
-    ConnectedServiceNameARM: 'MPN - Some Subscription Name'
+    ConnectedServiceNameARM: 'MPN - Some Subscription Name '
     GenerateMethodParameterSetSelection: 'ResourceGroupName'
     ResourceGroupName: 'AzureBootCamp-RG01'
     SubscriptionId: '	 aa95139a-399b-41c9-af0c-31aa4cc6c498'
