@@ -1,43 +1,3 @@
-provider "aws" {
-  access_key = "YOURAWSACCESSKEY"
-  secret_key = "YOURSECRETAWSACCESSKEY"
-  region     = "us-east-1"
-}
-
-resource "aws_vpc" "myVPC" {
-  cidr_block = "10.1.1.0/24"
-}
-
-resource "aws_subnet" "VPCSubnetOne" {
-  vpc_id     = "${aws_vpc.myVPC.id}"
-  cidr_block = "10.1.1.0/25"
-}
-resource "aws_subnet" "VPCSubnetTwo" {
-  vpc_id     = "${aws_vpc.myVPC.id}"
-  cidr_block = "10.1.1.128/25"
-}
-
-data "aws_ami" "ubuntuAMI" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-  owners = ["099720109477"] # Canonical
-}
-
-resource "aws_instance" "web" {
-  ami           = "${data.aws_ami.ubuntuAMI.id}"
-  instance_type = "t2.micro"
-  subnet_id = "${aws_subnet.VPCSubnetOne.id}"
-}
-
 provider "azurerm" {
   subscription_id             = "00000000-000000000-0000-000000000000"
   client_id                   = "00000000-000000000-0000-000000000000"
@@ -70,7 +30,7 @@ resource "azurerm_subnet" "SubnetTwo" {
   address_prefix       = "10.0.2.0/24"
 }
 resource "azurerm_network_interface" "demonic" {
-  name                = "demo-vm-nic"
+  name                = "$demo-vm-nic"
   location            = "${azurerm_resource_group.rg.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
 
@@ -103,7 +63,7 @@ resource "azurerm_virtual_machine" "demoVM" {
   os_profile {
     computer_name  = "terraformserver"
     admin_username = "demoadmin"
-    admin_password = "PUTASECUREPASSWORDHEREPLEASEFORTHELOVEOFGOD123\\a"
+    admin_password = "PUTASECUREPASSWORDHEREPLEASEFORTHELOVEOFGOD123\\aa"
   }
   os_profile_linux_config {
     disable_password_authentication = false
