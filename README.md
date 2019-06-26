@@ -4,4 +4,4 @@ This Repo contains ARM/Terraform/Cloudformation templates that I've created whil
 
 Please feek free to download and modify as you please!
 
-IF you would like to read my blog posts, these are currently published @ xello.com.au & jauchterlonie.com
+IF you would like to read my blog posts, these are currently published @ xello.com.au & jauchterlonie.com 
