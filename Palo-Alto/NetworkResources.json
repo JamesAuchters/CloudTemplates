@@ -1,0 +1,410 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"OMSWorkspaceResourceId":{
+			"type": "string",
+			"metadata": {
+				"description": "The resource ID of the workspace which all resources will be onboarded to."
+			}
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
+		"vnetName": {
+			"type": "string",
+			"DefaultValue": "CORE-VNET01",
+			"metadata": {
+				"description": "The base name for a core virtual network"
+			}
+		},
+		"vnetIPRange": {
+			"type": "string",
+			"DefaultValue": "10.1.0.0/16",
+			"metadata": {
+				"description": "The address space for the VNET."
+			}
+		},
+		"vnetDnsAddresses": {
+			"type": "array",
+			"defaultValue": [
+				"1.1.1.1",
+				"9.9.9.9"
+			],
+			"metadata": {
+				"Description": "The DNS address(es) of the DNS Server(s) used by the VNET"
+			}
+		},
+		"routeTableNamePublic": {
+			"type": "string",
+			"DefaultValue": "PUBLICRT",
+			"metadata": {
+				"description": "The suffix to be added to the public RT name."
+			}
+		},
+		"routeTableNamePrivate": {
+			"type": "string",
+			"DefaultValue": "PRIVATERT",
+			"metadata": {
+				"description": "The suffix to be added to the private RT name."
+			}
+		},
+		"routeTableNameRestricted": {
+			"type": "string",
+			"DefaultValue": "RESTRICTEDRT",
+			"metadata": {
+				"description": "The suffix to be added to the restricted RT name."
+			}
+		},
+		"routeTableNameGateway": {
+			"type": "string",
+			"DefaultValue": "GATEWAYRT",
+			"metadata": {
+				"description": "The suffix to be added to the gateway RT name."
+			}
+		},
+		"publicNSGName": {
+			"type": "string",
+			"DefaultValue": "PUBLICNSG",
+			"metadata": {
+				"description": "The suffix to be added to the public NSG name."
+			}
+		},
+		"privateNSGName": {
+			"type": "string",
+			"DefaultValue": "PRIVATENSG",
+			"metadata": {
+				"description": "The suffix to be added to the private NSG name."
+			}
+		},
+		"restrictedNSGName": {
+			"type": "string",
+			"DefaultValue": "RESTRICTEDNSG",
+			"metadata": {
+				"description": "The suffix to be added to the restricted NSG name."
+			}
+		},
+		"gatewayNSGName": {
+			"type": "string",
+			"DefaultValue": "GATEWAYNSG",
+			"metadata": {
+				"description": "The suffix to be added to the gateway NSG name."
+			}
+		},
+		"publicSubnetName": {
+			"type": "string",
+			"defaultValue": "Public",
+			"metadata": {
+				"description": "Name for public subnet."
+			}
+		},
+		"publicSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.1.0/24",
+			"metadata": {
+				"description": "Address range for public subnet"
+			}
+		},
+		"privateSubnetName": {
+			"type": "string",
+			"defaultValue": "Private",
+			"metadata": {
+				"description": "Name for private subnet."
+			}
+		},
+		"privateSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.2.0/24",
+			"metadata": {
+				"description": "Address range for private subnet"
+			}
+		},
+		"restrictedSubnetName": {
+			"type": "string",
+			"defaultValue": "Restricted",
+			"metadata": {
+				"description": "Name for restricted subnet."
+			}
+		},
+		"restrictedSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.3.0/24",
+			"metadata": {
+				"description": "Address range for resticted subnet"
+			}
+		},
+		"gatewaySubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.4.0/28",
+			"metadata": {
+				"description": "Address range for gateway subnet"
+			}
+		}
+	},
+	"variables": {
+		"networkWatcherName":  "[concat('NetworkWatcher - ',parameters('location'))]"
+	},
+	"functions": [],
+	"resources": [
+		{
+			"name": "[variables('networkWatcherName')]",
+			"type": "Microsoft.Network/networkWatchers",
+			"apiVersion": "2018-11-01",
+			"location": "[parameters('location')]",
+			"tags": {},
+			"properties": {},
+			"resources": []
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('publicNSGName'))]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('publicNSGName')) )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"logs": [ 
+							{
+								"category": "NetworkSecurityGroupEvent",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							},
+							{
+								"category": "NetworkSecurityGroupRuleCounter",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('privateNSGName')) )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"logs": [ 
+							{
+								"category": "NetworkSecurityGroupEvent",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							},
+							{
+								"category": "NetworkSecurityGroupRuleCounter",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('restrictedNSGName'))]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('restrictedNSGName')) )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"logs": [ 
+							{
+								"category": "NetworkSecurityGroupEvent",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							},
+							{
+								"category": "NetworkSecurityGroupRuleCounter",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamePublic'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamePrivate'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameRestricted'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameGateway'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks",
+			"apiVersion": "2018-08-01",
+			"name": "[parameters('vnetName')]",
+			"location": "[parameters('location')]",
+			"dependsOn": [],
+			"properties": {
+				"addressSpace": {
+					"addressPrefixes": [
+						"[parameters('vnetIPRange')]"
+					]
+				},
+				"dhcpOptions": {
+					"dnsServers": "[parameters('vnetDnsAddresses')]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('publicSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('publicNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePublic'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('publicSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('publicNSGName')))]"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNamePublic')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('privateSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('privateSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('privateNSGName')))]",
+					"location": "parameters('location')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('restrictedSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('restrictedNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameRestricted'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('restrictedSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('restrictedNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameRestricted')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/','GatewaySubnet')]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[parameters('restrictedSubnetName')]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('gatewaySubnetRange')]",
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameGateway')))]"
+				}
+			}
+		}
+	],
+	"outputs": {}
+}

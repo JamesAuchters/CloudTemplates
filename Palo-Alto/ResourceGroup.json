@@ -1,0 +1,86 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "apiProfile": "2018-06-01-profile",
+    "parameters": {
+        "networkRgName": {
+            "type": "string",
+            "DefaultValue": "NETWORK-RG01",
+            "metadata": {
+                "description": "A resource group to contain network resources."
+            }
+        },
+        "analyticsRgName": {
+            "type": "string",
+            "DefaultValue": "ANALYTICS-RG01",
+            "metadata": {
+                "description": "A resource group to contain analytics (OMS) resources."
+            }
+        },
+        "serverRgName": {
+            "type": "string",
+            "DefaultValue": "SERVER-RG01",
+            "metadata": {
+                "description": "A resource group to contain generic server resources."
+            }
+        },
+        "cloudshellRgName": {
+            "type": "string",
+            "DefaultValue": "CLOUDSHELL-RG01",
+            "metadata": {
+                "description": "A resource group to contain cloud shell storage accounts."
+            }
+        },
+        "templateLocation": {
+            "type": "string",
+            "DefaultValue": "australiaeast",
+            "allowedValues": [
+                "australiasoutheast",
+                "australiaeast"
+            ],
+            "metadata": {
+                "decription": "The Default Resource Group Location (AU South East/AU East)"
+            }
+        },
+        "templateLocation2": {
+            "type": "string",
+            "DefaultValue": "southeastasia",
+            "allowedValues": [
+                "australiasoutheast",
+                "australiaeast",
+                "southeastasia"
+            ],
+            "metadata": {
+                "decription": "The Default Resource Group Location (AU South East/AU East)"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "name": "[parameters('networkRgName')]",
+            "location": "[parameters('templateLocation')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "name": "[parameters('analyticsRgName')]",
+            "location": "[parameters('templateLocation')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "name": "[parameters('serverRgName')]",
+            "location": "[parameters('templateLocation')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "name": "[parameters('cloudshellRgName')]",
+            "location": "[parameters('templateLocation2')]",
+            "properties": {}
+        }
+    ],
+    "outputs": {}
+}
