@@ -130,7 +130,7 @@
         },
         "cloudshellRgName": {
             "type": "string",
-            "value": "[parameters('cloudshellRgName)]"
+            "value": "[parameters('cloudshellRgName')]"
         },
         "firewallRgName": {
             "type": "string",
