@@ -9,6 +9,6 @@ steps:
 
 - task: AzureCLI@1
   inputs:
-    ConnectedServiceNameARM: 'MPN - Some Subscription Name'
+    ConnectedServiceNameARM: 'PAYG - James Auchterlonie'
     scriptLocation: 'inlineScript'
     inlineScript: 'az deployment create --name Palo-Testing --location australiaeast --template-file ./Palo-Alto/master.json'
