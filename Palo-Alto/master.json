@@ -4,6 +4,20 @@
 	"parameters": {},
 	"variables": {},
 	"functions": [],
-	"resources": [],
+	"resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "name": "ResourceGroups",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/NetworkResources.json",
+                    "contentVersion":"1.0.0.0"
+                },
+                "parameters": {}
+            }
+        }
+    ],
 	"outputs": {}
 }
