@@ -20,7 +20,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "location": "[parameters('DeploymentLocation')]",
+            "location": "australiaeast",
             "name": "ResourceGroups",
             "properties": {
                 "mode": "Incremental",
