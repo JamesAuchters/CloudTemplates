@@ -30,21 +30,6 @@
                 },
                 "parameters": {}
             }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2018-05-01",
-            "location": "[parameters('DeploymentLocation')]",
-            "resourceGroup": "[reference('ResourceGroups').outputs.cloudshellRgName.value]",
-            "name": "CloudShell",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/CloudShell.json",
-                    "contentVersion":"1.0.0.0"
-                },
-                "parameters": {}
-            }
         }
     ],
 	"outputs": {}
