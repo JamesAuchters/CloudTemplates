@@ -19,7 +19,15 @@
         }
     },
     "variables": {
-        "CloudShellStorageName":"[concat(parameters('CloudShellStoragePrefix'), uniqueString(resourceGroup().id, deployment().name))]"
+        "CloudShellStorageName":"[concat(parameters('CloudShellStoragePrefix'), uniqueString(resourceGroup().id, deployment().name))]",
+        "tagValues": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('location')]",
+            "Service":"Azure Management"
+        }
     },
     "resources": [
         {
@@ -32,9 +40,7 @@
             "name": "[variables('CloudShellStorageName')]",
             "apiVersion": "2018-07-01",
             "location": "[parameters('location')]",
-            "tags": {
-                "ms-resource-usage": "azure-cloud-shell"
-            },
+            "tags": "[variables('tagValues')]",
             "scale": null,
             "properties": {
                 "networkAcls": {

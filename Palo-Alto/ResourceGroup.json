@@ -31,6 +31,13 @@
                 "description": "A resource group to contain cloud shell storage accounts."
             }
         },
+        "firewallRgName": {
+            "type": "string",
+            "DefaultValue": "FIREWALL-RG01",
+            "metadata": {
+                "description": "A resource group to contain cloud shell storage accounts."
+            }
+        },
         "templateLocation": {
             "type": "string",
             "DefaultValue": "australiaeast",
@@ -51,36 +58,83 @@
                 "southeastasia"
             ],
             "metadata": {
-                "decription": "The Default Resource Group Location (AU South East/AU East)"
+                "decription": "The Resource Group Location for secondary resource types"
             }
         }
     },
-    "variables": {},
+    "variables": {
+        "tagValues": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('templateLocation')]"
+        },
+        "tagValues2": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('templateLocation2')]"
+        }
+    },
     "resources": [
         {
             "type": "Microsoft.Resources/resourceGroups",
             "name": "[parameters('networkRgName')]",
             "location": "[parameters('templateLocation')]",
+            "tags": "[variables('tagValues')]",
             "properties": {}
         },
         {
             "type": "Microsoft.Resources/resourceGroups",
             "name": "[parameters('analyticsRgName')]",
             "location": "[parameters('templateLocation')]",
+            "tags": "[variables('tagValues')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "name": "[parameters('firewallRgName')]",
+            "location": "[parameters('templateLocation')]",
+            "tags": "[variables('tagValues')]",
             "properties": {}
         },
         {
             "type": "Microsoft.Resources/resourceGroups",
             "name": "[parameters('serverRgName')]",
             "location": "[parameters('templateLocation')]",
+            "tags": "[variables('tagValues')]",
             "properties": {}
         },
         {
             "type": "Microsoft.Resources/resourceGroups",
             "name": "[parameters('cloudshellRgName')]",
             "location": "[parameters('templateLocation2')]",
+            "tags": "[variables('tagValues2')]",
             "properties": {}
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "networkRgName": {
+            "type": "string",
+            "value": "[parameters('networkRgName')]"
+        },
+        "analyticsRgName": {
+            "type": "string",
+            "value": "[parameters('analyticsRgName')]"
+        },
+        "serverRgName": {
+            "type": "string",
+            "value": "[parameters('serverRgName')]"
+        },
+        "cloudshellRgName": {
+            "type": "string",
+            "value": "[parameters('cloudshellRgName)]"
+        },
+        "firewallRgName": {
+            "type": "string",
+            "value": "[parameters('firewallRgName')]"
+        }
+    }
 }
