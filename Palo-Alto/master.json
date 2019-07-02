@@ -1,6 +1,7 @@
 {
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-	"contentVersion": "1.0.0.0",
+    "contentVersion": "1.0.0.0",
+    "apiProfile": "2018-06-01-profile",
 	"parameters": {
         "DeploymentLocation": {
             "type": "string",
@@ -78,7 +79,45 @@
                     "contentVersion":"1.0.0.0"
                 },
                 "parameters":{
-                    "OMSWorkspaceResourceName": {"value": "[reference('AnalyticsWorkspace').outputs.WorkspaceResourceName.value]"}
+                    "OMSWorkspaceResourceName": {
+                        "value": "[reference('AnalyticsWorkspace').outputs.WorkspaceResourceName.value]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "name": "BaseNetworkDeployment",
+            "resourceGroup": "NETWORK-RG01",
+            "dependsOn": [
+                "BaseNetworkDeployment"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/PaloAlto.json",
+                    "contentVersion":"1.0.0.0"
+                },
+                "parameters":{
+                    "MgmtSubnetName":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.managementSubnetName.value]"
+                    },
+                    "DmzSubnetName":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.DMZSubnetName.value]"
+                    },
+                    "PrivateSubnetName":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.privateSubnetName.value]"
+                    },
+                    "MgmtSubnetPrefix": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.managementSubnetRange.value]"
+                    },
+                    "DmzSubnetPrefix": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.DMZSubnetRange.value]"
+                    },
+                    "PrivateSubnetPrefix": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.privateSubnetRange.value]"
+                    }
                 }
             }
         }

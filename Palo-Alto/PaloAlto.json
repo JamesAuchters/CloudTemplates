@@ -29,21 +29,18 @@
 		},
 		"MgmtSubnetPrefix": {
 			"type": "string",
-			"defaultValue": "192.168.0.0/24",
 			"metadata": {
 			  "description": "Mgmt subnet CIDR"
 			}
 		},
 		"DmzSubnetPrefix": {
 			"type": "string",
-			"defaultValue": "192.168.1.0/24",
 			"metadata": {
 			  "description": "DMZ subnet CIDR"
 			}
 		},
 		"PrivateSubnetPrefix": {
 			"type": "string",
-			"defaultValue": "192.168.2.0/24",
 			"metadata": {
 			  "description": "Private subnet CIDR"
 			}
@@ -79,6 +76,9 @@
 	},
 	"variables": {
 		"OMSWorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName'))]",
+		"DMZSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('DMZSubnetName'))]",
+		"privateSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('PrivateSubnetName'))]",
+		"managementSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('MgmtSubnetName'))]",
 		"tagValues": {
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
@@ -171,14 +171,50 @@
 			"tags": "[variables('tagValues')]",
 			"properties": {
 				"ipConfigurations": [{
-					"name": "[concat('ipconfig', '0')]",
+					"name": "ipconfig1",
 					"properties": {
 						"privateIPAllocationMethod": "Dynamic",
 						"publicIPAddress": {
 							"id": "[resourceId('Microsoft.Network/publicIPAddresses', [variables('fwPubIPName')]"
 						},
 						"subnet": {
-							"id": "[parameters('')]"
+							"id": "[variables('managementSubnetId')]"
+						}
+					}
+				}]
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"name": "[concat(variables('fwnicName'), '02')]",
+			"location": "[resourceGroup().location]",
+			"tags": "[variables('tagValues')]",
+			"properties": {
+				"enableIPForwarding": true,
+				"ipConfigurations": [{
+					"name": "ipconfig1",
+					"properties": {
+						"privateIPAllocationMethod": "Dynamic",
+						"subnet": {
+							"id": "[variables('privateSubnetId')]"
+						}
+					}
+				}]
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"name": "[concat(variables('fwnicName'), '03')]",
+			"location": "[resourceGroup().location]",
+			"tags": "[variables('tagValues')]",
+			"properties": {
+				"enableIPForwarding": true,
+				"ipConfigurations": [{
+					"name": "ipconfig1",
+					"properties": {
+						"privateIPAllocationMethod": "Dynamic",
+						"subnet": {
+							"id": "[variables('DMZSubnetId')]"
 						}
 					}
 				}]
