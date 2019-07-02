@@ -353,7 +353,6 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/',parameters('DMZSubnetName'))]",
 			"apiVersion": "2018-08-01",
-			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
@@ -374,7 +373,6 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/',parameters('privateSubnetName'))]",
 			"apiVersion": "2018-08-01",
-			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
@@ -396,7 +394,6 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/',parameters('managementSubnetName'))]",
 			"apiVersion": "2018-08-01",
-			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
@@ -418,7 +415,6 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/','GatewaySubnet')]",
 			"apiVersion": "2018-08-01",
-			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
