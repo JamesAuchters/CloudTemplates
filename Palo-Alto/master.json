@@ -33,7 +33,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "location": "[parameters('DeploymentLocation')]",
-            "resourceGroup": "[reference('ResourceGroups').outputs.cloudshellRgName.value]",
+            "resourceGroup": "CLOUDSHELL-RG01",
             "name": "CloudShell",
             "properties": {
                 "mode": "Incremental",
