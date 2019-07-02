@@ -3,6 +3,13 @@
 	"contentVersion": "1.0.0.0",
 	"apiProfile": "2018-06-01-profile",
 	"parameters": {
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
 		"OMSWorkspaceResourceName":{
 			"type": "string",
 			"metadata": {
@@ -104,6 +111,7 @@
             "type": "string",
             "defaultValue": "latest",
             "allowedValues": [
+				"latest",
                 "7.1.1",
 				"8.0.0"		    
             ],
@@ -379,7 +387,7 @@
 					"id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('fwAvailabilitySetName'))]"
 				},
 				"hardwareProfile": {
-					"vmSize": "[parameters('fwVmSize')]"
+					"vmSize": "[parameters('fwSize')]"
 				},
 				"osProfile": {
 					"computerName": "[parameters('fwName')]",
