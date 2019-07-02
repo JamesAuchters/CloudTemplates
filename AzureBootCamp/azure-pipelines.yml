@@ -6,9 +6,8 @@ pool:
 
 steps:
 
-
 - task: AzureCLI@1
   inputs:
-    ConnectedServiceNameARM: 'PAYG - James Auchterlonie'
+    azureSubscription: 'PAYG - James Auchterlonie(2861f6bf-8886-47a9-bc4b-de1a11df0e5f)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az deployment create --name Palo-Testing --location australiaeast --template-file ./Palo-Alto/master.json'
