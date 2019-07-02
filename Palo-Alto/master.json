@@ -106,6 +106,9 @@
                     "contentVersion":"1.0.0.0"
                 },
                 "parameters":{
+                    "OMSWorkspaceResourceName": {
+                        "value": "[reference('AnalyticsWorkspace').outputs.WorkspaceResourceName.value]"
+                    },
                     "mgmtSubnetName":{
                         "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetName.value]"
                     },
