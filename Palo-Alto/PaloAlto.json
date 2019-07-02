@@ -248,7 +248,31 @@
 						}
 					}
 				}]
-			}
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkInterfaces', concat(variables('fwnicName'), '01'))]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"type": "Microsoft.Network/networkInterfaces",
@@ -266,7 +290,31 @@
 						}
 					}
 				}]
-			}
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkInterfaces', concat(variables('fwnicName'), '02'))]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"type": "Microsoft.Network/networkInterfaces",
@@ -284,7 +332,31 @@
 						}
 					}
 				}]
-			}
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/networkInterfaces', concat(variables('fwnicName'), '03'))]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"type": "Microsoft.Compute/virtualMachines",
