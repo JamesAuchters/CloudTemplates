@@ -429,5 +429,30 @@
 			}
 		}
 	],
-	"outputs": {}
+	"outputs": {
+		"MgmtSubnetName":{
+			"type": "string",
+			"value": "[parameters('managementSubnetName')]"
+		},
+		"DmzSubnetName":{
+			"type": "string",
+			"value": "[parameters('DMZSubnetName')]"
+		},
+		"PrivateSubnetName":{
+			"type": "string",
+			"value": "[parameters('privateSubnetName')]"
+		},
+		"MgmtSubnetPrefix": {
+			"type": "string",
+			"value": "[parameters('managementSubnetRange')]"
+		},
+		"DmzSubnetPrefix": {
+			"type": "string",
+			"value": "[parameters('DMZSubnetRange')]"
+		},
+		"PrivateSubnetPrefix": {
+			"type": "string",
+			"value": "[parameters('privateSubnetRange')]"
+		}
+	}
 }
