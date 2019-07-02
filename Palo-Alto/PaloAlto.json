@@ -322,31 +322,32 @@
 						"sku": "[parameters('fwImageSku')]"
 					},
 					"osDisk": {
-							"name": "[concat(parameters('fwName'),'-OSDisk')]",
-							"caching": "ReadWrite",
-							"createOption": "FromImage",
-							"managedDisk": {
-								"storageAccountType": "Standard_LRS"
-							}
+						"name": "[concat(parameters('fwName'),'-OSDisk')]",
+						"caching": "ReadWrite",
+						"createOption": "FromImage"
 					}
 				},
 				"networkProfile": {
-					"networkInterfaces": [{
-						"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'01'))]",
-						"properties": {
-							"primary": true
+					"networkInterfaces": [
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'01'))]",
+							"properties": {
+								"primary": true
+							}
+						}, 
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'02'))]",
+							"properties": {
+								"primary": false
+							}
+						}, 
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'03'))]",
+							"properties": {
+								"primary": false
+							}
 						}
-					}, {
-						"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'02'))]",
-						"properties": {
-							"primary": false
-						}
-					}, {
-						"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'03'))]",
-						"properties": {
-							"primary": false
-						}
-					}]
+					]
 				}
 			}
 		}
