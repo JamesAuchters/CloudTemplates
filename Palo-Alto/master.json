@@ -13,7 +13,13 @@
             "metadata": {
                 "decription": "The Default Deployment Location (AU South East/AU East)"
             }
-        }
+        },
+        "fwAdminPassword": {
+			"type": "securestring",
+			"metadata": {
+				"description": "Password for palo alto firewall"
+			}
+		}
     },
 	"variables": {},
 	"functions": [],
@@ -88,8 +94,8 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "name": "BaseNetworkDeployment",
-            "resourceGroup": "NETWORK-RG01",
+            "name": "FirewallDeployment",
+            "resourceGroup": "FIREWALL-RG01",
             "dependsOn": [
                 "BaseNetworkDeployment"
             ],
@@ -117,6 +123,9 @@
                     },
                     "PrivateSubnetPrefix": {
                         "value": "[reference('BaseNetworkDeployment').outputs.privateSubnetRange.value]"
+                    },
+                    "fwAdminPassword" :{
+                        "value": "[parameters('fwAdminPassword')]"
                     }
                 }
             }

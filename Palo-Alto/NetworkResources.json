@@ -155,7 +155,7 @@
             "Region": "[parameters('location')]",
             "Service":"Azure Networking"
 		},
-		"networkWatcherName":  "[concat('NetworkWatcher - ',parameters('location'))]",
+		"networkWatcherName":  "[concat('NetworkWatcher_',parameters('location'))]",
 		"OMSWorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName'))]"
 	},
 	"functions": [],
@@ -333,6 +333,9 @@
 			"apiVersion": "2018-08-01",
 			"name": "[parameters('vnetName')]",
 			"tags": "[variables('tagValues')]",
+			"dependsOn": [
+				"[variables('networkWatcherName')]"
+			],
 			"location": "[parameters('location')]",
 			"dependsOn": [],
 			"properties": {

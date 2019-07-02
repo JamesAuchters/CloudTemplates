@@ -45,7 +45,7 @@
 			  "description": "Private subnet CIDR"
 			}
 		},
-		"availabilitySetName": {
+		"fwAvailabilitySetName": {
             "type": "string",
             "defaultValue": "FW-AVSET01",
             "metadata": {
@@ -72,6 +72,72 @@
 			"metadata": {
 				"description": "The Customer who this firewall is being deployed to."
 			}
+		},
+		"fwadminUserName": {
+			"type": "string",
+			"defaultValue" : "paloadministrator",
+            "metadata": {
+                "description": "Username for VM-Series administrator"
+            }
+        },
+        "fwadminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for VM-Series administrator"
+            }
+		},
+		"fwImagePublisher": {
+            "type": "string",
+			"defaultValue": "paloaltonetworks",
+			"metadata": {
+                "description": "VM-Series publisher"
+            }
+		},
+		"fwImageOffer": {
+            "type": "string",
+			"defaultValue": "vmseries1",
+			"metadata": {
+                "description": "VM-Series sku"
+            }
+		},
+		"fwImageVersion": {
+            "type": "string",
+            "defaultValue": "latest",
+            "allowedValues": [
+                "7.1.1",
+				"8.0.0"		    
+            ],
+            "metadata": {
+                "description": "PAN-OS version."
+            }
+        }, 
+        "fwImageSku": {
+            "type": "string",
+            "defaultValue": "byol",
+            "allowedValues": [
+                "byol",
+				"bundle1",
+				"bundle2"
+            ],
+            "metadata": {
+                "description": "VM-Series model: BYOL or hourly pay-as-you-go (PAYG): Bundle 1 or Bundle 2"
+            }
+        }, 
+        "fwSize": {
+			"type": "string",
+			"defaultValue" :"Standard_D3_v2",
+            "allowedValues": [
+                "Standard_D3",
+				"Standard_D3_v2",
+                "Standard_D4", 
+				"Standard_D4_v2",
+				"Standard_D5",
+				"Standard_D5_v2",
+                "Standard_A4"	    
+            ],
+            "metadata": {
+                "description": "Azure VM size for VM-Series"
+            }
 		}
 	},
 	"variables": {
@@ -95,7 +161,7 @@
 	"resources": [
 		{
 			"type": "Microsoft.Compute/availabilitySets",
-			"name": "[parameters('availabilitySetName')]",
+			"name": "[parameters('fwAvailabilitySetName')]",
 			"tags": "[variables('tagValues')]",
 			"location": "[resourceGroup().location]"
 		},
@@ -218,6 +284,70 @@
 						}
 					}
 				}]
+			}
+		},
+		{
+			"type": "Microsoft.Compute/virtualMachines",
+			"name": "[parameters('fwName')]",
+			"location": "[resourceGroup().location]",
+			"tags": "[variables('tagValues')]",
+			"plan": {
+				"name": "[parameters('fwImageSku')]",
+				"product": "[parameters('fwImageOffer')]",
+				"publisher": "[parameters('fwImagePublisher')]"
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'01'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'02'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'03'))]",
+				"[resourceId('Microsoft.Compute/availabilitySets',parameters('fwAvailabilitySetName'))]"
+			],
+			"properties": {
+				"availabilitySet": {
+					"id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('fwAvailabilitySetName'))]"
+				},
+				"hardwareProfile": {
+					"vmSize": "[parameters('fwVmSize')]"
+				},
+				"osProfile": {
+					"computerName": "[parameters('fwName')]",
+					"adminUsername": "[parameters('fwAdminUsername')]",
+					"adminPassword": "[parameters('fwAdminPassword')]"
+				},
+				"storageProfile": {
+					"imageReference": {
+						"publisher": "[parameters('fwImagePublisher')]",
+						"offer": "[parameters('fwImageOffer')]",
+						"version": "[parameters('fwImageVersion')]",
+						"sku": "[parameters('fwImageSku')]"
+					},
+					"osDisk": {
+							"name": "[concat(parameters('fwName'),'-OSDisk')]",
+							"caching": "ReadWrite",
+							"createOption": "FromImage",
+							"managedDisk": {
+								"storageAccountType": "Standard_LRS"
+							}
+					}
+				},
+				"networkProfile": {
+					"networkInterfaces": [{
+						"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'01'))]",
+						"properties": {
+							"primary": true
+						}
+					}, {
+						"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'02'))]",
+						"properties": {
+							"primary": false
+						}
+					}, {
+						"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'03'))]",
+						"properties": {
+							"primary": false
+						}
+					}]
+				}
 			}
 		}
 	],
