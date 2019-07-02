@@ -178,39 +178,7 @@
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": []
-			},
-			"resources": [
-				{
-					"type": "providers/diagnosticSettings",
-				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
-				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('DMZNSGName')) )]"
-				  	],
-				  	"apiVersion": "2017-05-01-preview",
-				  	"properties": {
-						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
-						"logs": [ 
-							{
-								"category": "NetworkSecurityGroupEvent",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							},
-							{
-								"category": "NetworkSecurityGroupRuleCounter",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							}
-						]
-					}
-				}
-			]	
+			}
 		},
 		{
 			"apiVersion": "2018-08-01",
@@ -220,39 +188,7 @@
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": []
-			},
-			"resources": [
-				{
-					"type": "providers/diagnosticSettings",
-				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
-				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('privateNSGName')) )]"
-				  	],
-				  	"apiVersion": "2017-05-01-preview",
-				  	"properties": {
-						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
-						"logs": [ 
-							{
-								"category": "NetworkSecurityGroupEvent",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							},
-							{
-								"category": "NetworkSecurityGroupRuleCounter",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							}
-						]
-					}
-				}
-			]
+			}
 		},
 		{
 			"apiVersion": "2018-08-01",
@@ -262,39 +198,7 @@
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": []
-			},
-			"resources": [
-				{
-					"type": "providers/diagnosticSettings",
-				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
-				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('managementNSGName')) )]"
-				  	],
-				  	"apiVersion": "2017-05-01-preview",
-				  	"properties": {
-						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
-						"logs": [ 
-							{
-								"category": "NetworkSecurityGroupEvent",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							},
-							{
-								"category": "NetworkSecurityGroupRuleCounter",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							}
-						]
-					}
-				}
-			]
+			}
 		},
 		{
 			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameDMZ'))]",
