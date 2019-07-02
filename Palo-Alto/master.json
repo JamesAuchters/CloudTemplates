@@ -36,6 +36,7 @@
             "location": "[parameters('DeploymentLocation')]",
             "apiVersion": "2018-05-01",
             "name": "ResourceGroups",
+            "ResourceGroup": "[reference('ResourceGroups').outputs.cloudshellRgName.value]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
