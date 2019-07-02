@@ -2,7 +2,7 @@
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
-		"OMSWorkspaceResourceId":{
+		"OMSWorkspaceResourceName":{
 			"type": "string",
 			"metadata": {
 				"description": "The resource ID of the workspace which all resources will be onboarded to."
@@ -146,7 +146,8 @@
 		}
 	},
 	"variables": {
-		"networkWatcherName":  "[concat('NetworkWatcher - ',parameters('location'))]"
+		"networkWatcherName":  "[concat('NetworkWatcher - ',parameters('location'))]",
+		"OMSWorkspaceResourceId": "['resourceId(Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName')]"
 	},
 	"functions": [],
 	"resources": [
@@ -154,6 +155,7 @@
 			"name": "[variables('networkWatcherName')]",
 			"type": "Microsoft.Network/networkWatchers",
 			"apiVersion": "2018-11-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"tags": {},
 			"properties": {},
@@ -163,6 +165,7 @@
 			"apiVersion": "2018-08-01",
 			"type": "Microsoft.Network/networkSecurityGroups",
 			"name": "[concat(parameters('vnetName'), '-', parameters('DMZNSGName'))]",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": []
@@ -172,12 +175,12 @@
 					"type": "providers/diagnosticSettings",
 				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
 				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('DMZNSGName')) )]"
+						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('privateNSGName')) )]"
 				  	],
 				  	"apiVersion": "2017-05-01-preview",
 				  	"properties": {
 						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
 						"logs": [ 
 							{
 								"category": "NetworkSecurityGroupEvent",
@@ -198,12 +201,13 @@
 						]
 					}
 				}
-			]
+			]	
 		},
 		{
 			"apiVersion": "2018-08-01",
 			"type": "Microsoft.Network/networkSecurityGroups",
 			"name": "[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": []
@@ -218,7 +222,7 @@
 				  	"apiVersion": "2017-05-01-preview",
 				  	"properties": {
 						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
 						"logs": [ 
 							{
 								"category": "NetworkSecurityGroupEvent",
@@ -245,6 +249,7 @@
 			"apiVersion": "2018-08-01",
 			"type": "Microsoft.Network/networkSecurityGroups",
 			"name": "[concat(parameters('vnetName'), '-', parameters('restrictedNSGName'))]",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": []
@@ -259,7 +264,7 @@
 				  	"apiVersion": "2017-05-01-preview",
 				  	"properties": {
 						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[parameters('OMSWorkspaceResourceId')]",
+						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
 						"logs": [ 
 							{
 								"category": "NetworkSecurityGroupEvent",
@@ -286,6 +291,7 @@
 			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameDMZ'))]",
 			"type": "Microsoft.Network/routeTables",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('Location')]",
 			"properties": {}
 		},
@@ -293,6 +299,7 @@
 			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamePrivate'))]",
 			"type": "Microsoft.Network/routeTables",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('Location')]",
 			"properties": {}
 		},
@@ -300,6 +307,7 @@
 			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameRestricted'))]",
 			"type": "Microsoft.Network/routeTables",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('Location')]",
 			"properties": {}
 		},
@@ -307,6 +315,7 @@
 			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameGateway'))]",
 			"type": "Microsoft.Network/routeTables",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('Location')]",
 			"properties": {}
 		},
@@ -314,6 +323,7 @@
 			"type": "Microsoft.Network/virtualNetworks",
 			"apiVersion": "2018-08-01",
 			"name": "[parameters('vnetName')]",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [],
 			"properties": {
@@ -331,6 +341,7 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/',parameters('DMZSubnetName'))]",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
@@ -351,6 +362,7 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/',parameters('privateSubnetName'))]",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
@@ -372,6 +384,7 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/',parameters('restrictedSubnetName'))]",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
@@ -393,6 +406,7 @@
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"name": "[concat(parameters('vnetName'),'/','GatewaySubnet')]",
 			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",

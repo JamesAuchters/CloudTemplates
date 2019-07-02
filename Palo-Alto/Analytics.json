@@ -30,7 +30,15 @@
         }
     },
     "variables": {
-        "workspaceUniqueName":"[concat(parameters('workspaceName'), '-', uniqueString(resourceGroup().id, deployment().name))]"
+        "workspaceUniqueName":"[concat(parameters('workspaceName'), '-', uniqueString(resourceGroup().id, deployment().name))]",
+        "tagValues": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('location')]",
+            "Service":"Azure Monitoring"
+        }
     },
     "functions": [],
     "resources": [
@@ -38,6 +46,7 @@
             "type": "Microsoft.OperationalInsights/workspaces",
             "name": "[variables('workspaceUniqueName')]",
             "apiVersion": "2017-04-26-preview",
+            "tags": "[variables('tagValues')]",
             "location": "[parameters('location')]",
             "properties": {
                 "sku": {
@@ -50,9 +59,9 @@
         }
     ],
     "outputs": {
-        "WorkspaceResourceId":{
+        "WorkspaceResourceName":{
             "type": "string",
-            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceUniqueName'))]"
+            "value": "[variables('workspaceUniqueName')]"
         }
     }
 }

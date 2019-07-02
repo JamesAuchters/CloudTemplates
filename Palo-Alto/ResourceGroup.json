@@ -115,26 +115,5 @@
             "properties": {}
         }
     ],
-    "outputs": {
-        "networkRgName": {
-            "type": "string",
-            "value": "[parameters('networkRgName')]"
-        },
-        "analyticsRgName": {
-            "type": "string",
-            "value": "[parameters('analyticsRgName')]"
-        },
-        "serverRgName": {
-            "type": "string",
-            "value": "[parameters('serverRgName')]"
-        },
-        "cloudshellRgName": {
-            "type": "string",
-            "value": "[parameters('cloudshellRgName')]"
-        },
-        "firewallRgName": {
-            "type": "string",
-            "value": "[parameters('firewallRgName')]"
-        }
-    }
+    "outputs": {}
 }
