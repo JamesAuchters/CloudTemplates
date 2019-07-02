@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "workspaceName": {
-            "type": "String",
+            "type": "string",
             "defaultValue": "OMSWORKSPACE",
             "metadata": {
                 "description": "Specifies the name of the workspace."
@@ -17,7 +17,7 @@
             }
         },
         "sku": {
-            "type": "String",
+            "type": "string",
             "allowedValues": [
                 "Standalone",
                 "PerNode",
@@ -41,7 +41,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "sku": {
-                    "Name": "[parameters('sku')]"
+                    "name": "[parameters('sku')]"
                 },
                 "features": {
                     "searchVersion": 1

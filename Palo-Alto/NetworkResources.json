@@ -39,11 +39,11 @@
 				"Description": "The DNS address(es) of the DNS Server(s) used by the VNET"
 			}
 		},
-		"routeTableNamePublic": {
+		"routeTableNameDMZ": {
 			"type": "string",
-			"DefaultValue": "PUBLICRT",
+			"DefaultValue": "DMZRT",
 			"metadata": {
-				"description": "The suffix to be added to the public RT name."
+				"description": "The suffix to be added to the DMZ RT name."
 			}
 		},
 		"routeTableNamePrivate": {
@@ -67,11 +67,11 @@
 				"description": "The suffix to be added to the gateway RT name."
 			}
 		},
-		"publicNSGName": {
+		"DMZNSGName": {
 			"type": "string",
-			"DefaultValue": "PUBLICNSG",
+			"DefaultValue": "DMZNSG",
 			"metadata": {
-				"description": "The suffix to be added to the public NSG name."
+				"description": "The suffix to be added to the DMZ NSG name."
 			}
 		},
 		"privateNSGName": {
@@ -95,18 +95,18 @@
 				"description": "The suffix to be added to the gateway NSG name."
 			}
 		},
-		"publicSubnetName": {
+		"DMZSubnetName": {
 			"type": "string",
-			"defaultValue": "Public",
+			"defaultValue": "DMZ",
 			"metadata": {
-				"description": "Name for public subnet."
+				"description": "Name for DMZ subnet."
 			}
 		},
-		"publicSubnetRange": {
+		"DMZSubnetRange": {
 			"type": "string",
 			"defaultValue": "10.1.1.0/24",
 			"metadata": {
-				"description": "Address range for public subnet"
+				"description": "Address range for DMZ subnet"
 			}
 		},
 		"privateSubnetName": {
@@ -162,7 +162,7 @@
 		{
 			"apiVersion": "2018-08-01",
 			"type": "Microsoft.Network/networkSecurityGroups",
-			"name": "[concat(parameters('vnetName'), '-', parameters('publicNSGName'))]",
+			"name": "[concat(parameters('vnetName'), '-', parameters('DMZNSGName'))]",
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": []
@@ -172,7 +172,7 @@
 					"type": "providers/diagnosticSettings",
 				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
 				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('publicNSGName')) )]"
+						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('DMZNSGName')) )]"
 				  	],
 				  	"apiVersion": "2017-05-01-preview",
 				  	"properties": {
@@ -283,7 +283,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamePublic'))]",
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameDMZ'))]",
 			"type": "Microsoft.Network/routeTables",
 			"apiVersion": "2018-08-01",
 			"location": "[parameters('Location')]",
@@ -329,21 +329,21 @@
 		},
 		{
 			"type": "Microsoft.Network/virtualNetworks/subnets",
-			"name": "[concat(parameters('vnetName'),'/',parameters('publicSubnetName'))]",
+			"name": "[concat(parameters('vnetName'),'/',parameters('DMZSubnetName'))]",
 			"apiVersion": "2018-08-01",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[concat(parameters('vnetName'), '-', parameters('publicNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePublic'))]"
+				"[concat(parameters('vnetName'), '-', parameters('DMZNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameDMZ'))]"
 			],
 			"properties": {
-				"addressPrefix": "[parameters('publicSubnetRange')]",
+				"addressPrefix": "[parameters('DMZSubnetRange')]",
 				"networkSecurityGroup": {
-					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('publicNSGName')))]"
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('DMZNSGName')))]"
 				},
 				"routeTable": {
-					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNamePublic')))]"
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameDMZ')))]"
 				}
 			}
 		},
