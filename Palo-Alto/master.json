@@ -106,23 +106,23 @@
                     "contentVersion":"1.0.0.0"
                 },
                 "parameters":{
-                    "MgmtSubnetName":{
-                        "value": "[reference('BaseNetworkDeployment').outputs.managementSubnetName.value]"
+                    "mgmtSubnetName":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetName.value]"
                     },
-                    "DmzSubnetName":{
-                        "value": "[reference('BaseNetworkDeployment').outputs.DMZSubnetName.value]"
+                    "dmzSubnetName":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.DmzSubnetName.value]"
                     },
-                    "PrivateSubnetName":{
-                        "value": "[reference('BaseNetworkDeployment').outputs.privateSubnetName.value]"
+                    "privateSubnetName":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.PrivateSubnetName.value]"
                     },
-                    "MgmtSubnetPrefix": {
-                        "value": "[reference('BaseNetworkDeployment').outputs.managementSubnetRange.value]"
+                    "mgmtSubnetPrefix": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetPrefix.value]"
                     },
-                    "DmzSubnetPrefix": {
-                        "value": "[reference('BaseNetworkDeployment').outputs.DMZSubnetRange.value]"
+                    "dmzSubnetPrefix": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.DmzSubnetPrefix.value]"
                     },
-                    "PrivateSubnetPrefix": {
-                        "value": "[reference('BaseNetworkDeployment').outputs.privateSubnetRange.value]"
+                    "privateSubnetPrefix": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.PrivateSubnetPrefix.value]"
                     },
                     "fwAdminPassword" :{
                         "value": "[parameters('fwAdminPassword')]"

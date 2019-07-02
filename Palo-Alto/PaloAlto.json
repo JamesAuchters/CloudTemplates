@@ -241,7 +241,7 @@
 					"properties": {
 						"privateIPAllocationMethod": "Dynamic",
 						"publicIPAddress": {
-							"id": "[resourceId('Microsoft.Network/publicIPAddresses', [variables('fwPubIPName')]"
+							"id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('fwPubIPName'))]"
 						},
 						"subnet": {
 							"id": "[variables('managementSubnetId')]"
