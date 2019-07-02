@@ -54,11 +54,11 @@
 				"description": "The suffix to be added to the private RT name."
 			}
 		},
-		"routeTableNameRestricted": {
+		"routeTableNamemanagement": {
 			"type": "string",
-			"DefaultValue": "RESTRICTEDRT",
+			"DefaultValue": "MGMTRT",
 			"metadata": {
-				"description": "The suffix to be added to the restricted RT name."
+				"description": "The suffix to be added to the management RT name."
 			}
 		},
 		"routeTableNameGateway": {
@@ -82,11 +82,11 @@
 				"description": "The suffix to be added to the private NSG name."
 			}
 		},
-		"restrictedNSGName": {
+		"managementNSGName": {
 			"type": "string",
-			"DefaultValue": "RESTRICTEDNSG",
+			"DefaultValue": "MGMTNSG",
 			"metadata": {
-				"description": "The suffix to be added to the restricted NSG name."
+				"description": "The suffix to be added to the management NSG name."
 			}
 		},
 		"gatewayNSGName": {
@@ -124,23 +124,23 @@
 				"description": "Address range for private subnet"
 			}
 		},
-		"restrictedSubnetName": {
+		"managementSubnetName": {
 			"type": "string",
-			"defaultValue": "Restricted",
+			"defaultValue": "Management",
 			"metadata": {
-				"description": "Name for restricted subnet."
+				"description": "Name for management subnet."
 			}
 		},
-		"restrictedSubnetRange": {
+		"managementSubnetRange": {
 			"type": "string",
 			"defaultValue": "10.1.3.0/24",
 			"metadata": {
-				"description": "Address range for resticted subnet"
+				"description": "Address range for management subnet"
 			}
 		},
 		"gatewaySubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.4.0/28",
+			"defaultValue": "10.1.4.0/24",
 			"metadata": {
 				"description": "Address range for gateway subnet"
 			}
@@ -184,7 +184,7 @@
 					"type": "providers/diagnosticSettings",
 				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
 				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('privateNSGName')) )]"
+						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('DMZNSGName')) )]"
 				  	],
 				  	"apiVersion": "2017-05-01-preview",
 				  	"properties": {
@@ -257,7 +257,7 @@
 		{
 			"apiVersion": "2018-08-01",
 			"type": "Microsoft.Network/networkSecurityGroups",
-			"name": "[concat(parameters('vnetName'), '-', parameters('restrictedNSGName'))]",
+			"name": "[concat(parameters('vnetName'), '-', parameters('managementNSGName'))]",
 			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"properties": {
@@ -268,7 +268,7 @@
 					"type": "providers/diagnosticSettings",
 				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
 				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('restrictedNSGName')) )]"
+						"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('managementNSGName')) )]"
 				  	],
 				  	"apiVersion": "2017-05-01-preview",
 				  	"properties": {
@@ -313,7 +313,7 @@
 			"properties": {}
 		},
 		{
-			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameRestricted'))]",
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamemanagement'))]",
 			"type": "Microsoft.Network/routeTables",
 			"apiVersion": "2018-08-01",
 			"tags": "[variables('tagValues')]",
@@ -391,23 +391,23 @@
 		},
 		{
 			"type": "Microsoft.Network/virtualNetworks/subnets",
-			"name": "[concat(parameters('vnetName'),'/',parameters('restrictedSubnetName'))]",
+			"name": "[concat(parameters('vnetName'),'/',parameters('managementSubnetName'))]",
 			"apiVersion": "2018-08-01",
 			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[concat(parameters('vnetName'), '-', parameters('restrictedNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNameRestricted'))]"
+				"[concat(parameters('vnetName'), '-', parameters('managementNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement'))]"
 			],
 			"properties": {
-				"addressPrefix": "[parameters('restrictedSubnetRange')]",
+				"addressPrefix": "[parameters('managementSubnetRange')]",
 				"networkSecurityGroup": {
-					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('restrictedNSGName')))]",
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('managementNSGName')))]",
 					"location": "parameters('rgLocation')"
 				},
 				"routeTable": {
-					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameRestricted')))]"
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement')))]"
 				}
 			}
 		},
@@ -419,7 +419,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[parameters('restrictedSubnetName')]"
+				"[parameters('managementSubnetName')]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('gatewaySubnetRange')]",

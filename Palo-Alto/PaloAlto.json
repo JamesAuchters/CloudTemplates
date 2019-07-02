@@ -1,7 +1,53 @@
 {
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
+	"apiProfile": "2018-06-01-profile",
 	"parameters": {
+		"OMSWorkspaceResourceName":{
+			"type": "string",
+			"metadata": {
+				"description": "The resource name of the workspace which all resources will be onboarded to."
+			}
+		},
+		"MgmtSubnetName":{
+			"type": "string",
+			"metadata": {
+				"description": "The name of the Mgmt Subnet"
+			}
+		},
+		"DmzSubnetName":{
+			"type": "string",
+			"metadata": {
+				"description": "The name of the DMZ Subnet"
+			}
+		},
+		"PrivateSubnetName":{
+			"type": "string",
+			"metadata": {
+				"description": "The name of the Private Subnet"
+			}
+		},
+		"MgmtSubnetPrefix": {
+			"type": "string",
+			"defaultValue": "192.168.0.0/24",
+			"metadata": {
+			  "description": "Mgmt subnet CIDR"
+			}
+		},
+		"DmzSubnetPrefix": {
+			"type": "string",
+			"defaultValue": "192.168.1.0/24",
+			"metadata": {
+			  "description": "DMZ subnet CIDR"
+			}
+		},
+		"PrivateSubnetPrefix": {
+			"type": "string",
+			"defaultValue": "192.168.2.0/24",
+			"metadata": {
+			  "description": "Private subnet CIDR"
+			}
+		},
 		"availabilitySetName": {
             "type": "string",
             "defaultValue": "FW-AVSET01",
@@ -9,9 +55,30 @@
                 "description": "The availability set that the Palo Alto Firewall will be deployed to."
             }
 		},
-		
+		"fwName": {
+            "type": "string",
+            "defaultValue": "AZURE-FW",
+            "metadata": {
+                "description": "The name used for the Azure Firewall"
+            }
+		},
+		"fwPubIPAddressType": {
+			"type": "string",
+			"defaultValue": "Dynamic",
+			"metadata": {
+                "description": "The assignment type used for the Palo Alto Public MGMT Ip."
+            }
+		},
+		"customerName":{
+			"type": "string",
+			"defaultValue": "Xello",
+			"metadata": {
+				"description": "The Customer who this firewall is being deployed to."
+			}
+		}
 	},
 	"variables": {
+		"OMSWorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName'))]",
 		"tagValues": {
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
@@ -19,27 +86,102 @@
             "CreatedBy": "Xello Australia",
             "Region": "[parameters('location')]",
             "Service":"Azure Firewall"
-        }
+		},
+		"fwPubIPName": "[concat(parameters('fwName'), '-PUBIP01')]",
+		"fwPubIPDNSName" : "[concat(parameters('customerName'), '-FWMGMTInterface')]",
+		"fwnicName": "[concat(parameters('fwName'), '-NIC')]"
 	},
 	"functions": [],
 	"resources": [
 		{
-			"apiVersion": "2015-05-01-preview",
 			"type": "Microsoft.Compute/availabilitySets",
 			"name": "[parameters('availabilitySetName')]",
 			"tags": "[variables('tagValues')]",
 			"location": "[resourceGroup().location]"
 		},
 		{
-			"apiVersion": "[variables('apiVersion')]",
 			"type": "Microsoft.Network/publicIPAddresses",
-			"name": "[variables('fwpublicIPName')]",
-			"location": "[parameters('location')]",
+			"name": "[variables('fwPubIPName')]",
+			"tags": "[variables('tagValues')]",
+			"location": "[resourceGroup().location]",
 			"properties": {
-				"publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+				"publicIPAllocationMethod": "[parameters('fwPubIPAddressType')]",
 				"dnsSettings": {
-					"domainNameLabel": "[parameters('dnsNameForPublicIP')]"
+					"domainNameLabel": "[variables('fwPubIPDNSName')]"
 				}
+			},
+			"resources": [
+				{
+					"type": "providers/diagnosticSettings",
+				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
+				  	"dependsOn": [
+						"[resourceId('Microsoft.Network/publicIPAddresses', variables('fwPubIPName') )]"
+				  	],
+				  	"apiVersion": "2017-05-01-preview",
+				  	"properties": {
+						"name": "NetworkSecurityGroupEvent",
+						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
+						"logs": [ 
+							{
+								"category": "DDoSProtectionNotifications",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							},
+							{
+								"category": "DDoSMitigationFlowLogs",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							},
+							{
+								"category": "DDoSMitigationReports",
+								"enabled": true,
+								"retentionPolicy": {
+									"days": 30,
+									"enabled": true
+								}
+							}
+						],
+						"metrics": [
+							{
+							  "category": "AllMetrics",
+							  "enabled": true,
+							  "retentionPolicy": {
+								"enabled": true,
+								"days": 30
+							  }
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"name": "[concat(variables('fwnicName'), '01')]",
+			"location": "[resourceGroup().location]",
+			"dependsOn": [
+				"[concat('Microsoft.Network/publicIPAddresses/', variables('fwPubIPName'))]"
+			],
+			"tags": "[variables('tagValues')]",
+			"properties": {
+				"ipConfigurations": [{
+					"name": "[concat('ipconfig', '0')]",
+					"properties": {
+						"privateIPAllocationMethod": "Dynamic",
+						"publicIPAddress": {
+							"id": "[resourceId('Microsoft.Network/publicIPAddresses', [variables('fwPubIPName')]"
+						},
+						"subnet": {
+							"id": "[parameters('')]"
+						}
+					}
+				}]
 			}
 		}
 	],
