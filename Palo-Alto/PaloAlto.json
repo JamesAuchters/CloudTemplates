@@ -1,9 +1,47 @@
 {
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
-	"parameters": {},
-	"variables": {},
+	"parameters": {
+		"availabilitySetName": {
+            "type": "string",
+            "defaultValue": "FW-AVSET01",
+            "metadata": {
+                "description": "The availability set that the Palo Alto Firewall will be deployed to."
+            }
+		},
+		
+	},
+	"variables": {
+		"tagValues": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('location')]",
+            "Service":"Azure Firewall"
+        }
+	},
 	"functions": [],
-	"resources": [],
+	"resources": [
+		{
+			"apiVersion": "2015-05-01-preview",
+			"type": "Microsoft.Compute/availabilitySets",
+			"name": "[parameters('availabilitySetName')]",
+			"tags": "[variables('tagValues')]",
+			"location": "[resourceGroup().location]"
+		},
+		{
+			"apiVersion": "[variables('apiVersion')]",
+			"type": "Microsoft.Network/publicIPAddresses",
+			"name": "[variables('fwpublicIPName')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+				"dnsSettings": {
+					"domainNameLabel": "[parameters('dnsNameForPublicIP')]"
+				}
+			}
+		}
+	],
 	"outputs": {}
 }
