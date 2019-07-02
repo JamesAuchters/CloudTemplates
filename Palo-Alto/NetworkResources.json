@@ -147,7 +147,7 @@
 	},
 	"variables": {
 		"networkWatcherName":  "[concat('NetworkWatcher - ',parameters('location'))]",
-		"OMSWorkspaceResourceId": "['resourceId(Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName')]"
+		"OMSWorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName')]"
 	},
 	"functions": [],
 	"resources": [

@@ -78,7 +78,7 @@
                     "contentVersion":"1.0.0.0"
                 },
                 "parameters":{
-                    "OMSWorkspaceResourceName": "[reference('AnalyticsWorkspace').outputs.workspaceUniqueName.value]"
+                    "OMSWorkspaceResourceName": {"value": "[reference('AnalyticsWorkspace').outputs.WorkspaceResourceName.value]"}
                 }
             }
         }
