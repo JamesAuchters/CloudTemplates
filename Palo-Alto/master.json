@@ -109,6 +109,9 @@
                     "OMSWorkspaceResourceName": {
                         "value": "[reference('AnalyticsWorkspace').outputs.WorkspaceResourceName.value]"
                     },
+                    "vnetName":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.vnetName.value]"
+                    },
                     "mgmtSubnetName":{
                         "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetName.value]"
                     },

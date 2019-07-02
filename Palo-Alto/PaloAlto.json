@@ -16,6 +16,12 @@
 				"description": "The resource name of the workspace which all resources will be onboarded to."
 			}
 		},
+		"vnetName":{
+			"type": "string",
+			"metadata": {
+				"description": "The name of the Mgmt Subnet"
+			}
+		},
 		"MgmtSubnetName":{
 			"type": "string",
 			"metadata": {
@@ -150,9 +156,10 @@
 	},
 	"variables": {
 		"OMSWorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName'))]",
-		"DMZSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('DMZSubnetName'))]",
-		"privateSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('PrivateSubnetName'))]",
-		"managementSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('MgmtSubnetName'))]",
+		"vnetId": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+		"DMZSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('DmzSubnetName') )]",
+		"privateSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('PrivateSubnetName') )]",
+		"managementSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('MgmtSubnetName') )]",
 		"tagValues": {
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
