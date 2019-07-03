@@ -664,7 +664,7 @@
 		},
 		"DmzSubnetID":{
             "type": "string",
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', , parameters('DMZSubnetName'))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('DMZSubnetName'))]"
 		},
 		"PrivateSubnetID":{
             "type": "string",
