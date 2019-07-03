@@ -40,6 +40,27 @@
 				"Description": "The DNS address(es) of the DNS Server(s) used by the VNET"
 			}
 		},
+		"routeTableNameSQL": {
+			"type": "string",
+			"DefaultValue": "SQLRT",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ RT name."
+			}
+		},
+		"routeTableNameWEB": {
+			"type": "string",
+			"DefaultValue": "WEBRT",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ RT name."
+			}
+		},
+		"routeTableNameAADS": {
+			"type": "string",
+			"DefaultValue": "AADSRT",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ RT name."
+			}
+		},
 		"routeTableNameDMZ": {
 			"type": "string",
 			"DefaultValue": "DMZRT",
@@ -66,6 +87,13 @@
 			"DefaultValue": "GATEWAYRT",
 			"metadata": {
 				"description": "The suffix to be added to the gateway RT name."
+			}
+		},
+		"aadsNSGName": {
+			"type": "string",
+			"DefaultValue": "AADSNSG",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ NSG name."
 			}
 		},
 		"sqlNSGName": {
@@ -187,6 +215,16 @@
 		{
 			"apiVersion": "2018-08-01",
 			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('aadsNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
 			"name": "[concat(parameters('vnetName'), '-', parameters('sqlNSGName'))]",
 			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
@@ -233,6 +271,30 @@
 			"properties": {
 				"securityRules": []
 			}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameSQL'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameWEB'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameAADS'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
 		},
 		{
 			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameDMZ'))]",
