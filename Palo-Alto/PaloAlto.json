@@ -183,6 +183,7 @@
 		{
 			"type": "Microsoft.Network/publicIPAddresses",
 			"name": "[variables('fwPubIPName')]",
+			"api-version":"2015-06-15",
 			"tags": "[variables('tagValues')]",
 			"location": "[resourceGroup().location]",
 			"properties": {
