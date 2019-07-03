@@ -30,18 +30,17 @@
 },
 "variables": {},
 "resources": [
-    {
-        "type": "Microsoft.AAD/DomainServices",
-        "name": "[parameters('domainName')]",
-        "apiVersion": "2017-06-01",
-        "location": "[parameters('location')]",
-        "dependsOn": ["[parameters('vnetName')]"],
-        "properties": {
-            "domainName": "[parameters('domainName')]",
-            "vnetSiteID": "[parameters('vnetId')]",
-            "subnetId": "[parameters('aadsSubnetId')]"
-        }
+  {
+    "type": "Microsoft.AAD/DomainServices",
+    "name": "[parameters('domainName')]",
+    "apiVersion": "2017-06-01",
+    "location": "[parameters('location')]",
+    "properties": {
+      "domainName": "[parameters('domainName')]",
+      "vnetSiteID": "[parameters('vnetId')]",
+      "subnetId": "[parameters('aadsSubnetId')]"
     }
+  }
 ],
   "outputs": {}
 }
