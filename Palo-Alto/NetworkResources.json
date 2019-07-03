@@ -210,14 +210,14 @@
 		},
 		"sqlSubnetName": {
 			"type": "string",
-			"defaultValue": "Management",
+			"defaultValue": "SQL",
 			"metadata": {
 				"description": "Name for sql subnet."
 			}
 		},
 		"webSubnetName": {
 			"type": "string",
-			"defaultValue": "Management",
+			"defaultValue": "WEB",
 			"metadata": {
 				"description": "Name for web subnet."
 			}
