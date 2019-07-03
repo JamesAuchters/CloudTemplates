@@ -660,19 +660,19 @@
 		},
 		"MgmtSubnetID":{
             "type": "string",
-            "value": "[resourceId(concat('Microsoft.Network/virtualNetworks/', parameters( 'vnetName'), '/subnets/', parameters('mgmtSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets',  parameters('managementSubnetName'))]"
 		},
 		"DmzSubnetID":{
             "type": "string",
-            "value": "[resourceId(concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('DMZSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', , parameters('DMZSubnetName'))]"
 		},
 		"PrivateSubnetID":{
             "type": "string",
-            "value": "[resourceId(concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('PrivateSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets' parameters('PrivateSubnetName'))]"
 		},
 		"aadsSubnetID":{
             "type": "string",
-            "value": "[resourceId(concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('aadsSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('aadsSubnetName'))]"
 		},
 		"MgmtSubnetName":{
 			"type": "string",
