@@ -668,7 +668,7 @@
 		},
 		"PrivateSubnetID":{
             "type": "string",
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets' parameters('PrivateSubnetName'))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('PrivateSubnetName'))]"
 		},
 		"aadsSubnetID":{
             "type": "string",
