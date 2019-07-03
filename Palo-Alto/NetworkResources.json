@@ -658,6 +658,10 @@
 			"type": "string",
 			"value": "[parameters('vnetName')]"
 		},
+		"vnetId":{
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks',  parameters('vnetName'))]"
+		},
 		"MgmtSubnetID":{
             "type": "string",
             "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets',  parameters('managementSubnetName'))]"

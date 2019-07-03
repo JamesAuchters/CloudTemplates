@@ -15,16 +15,14 @@
         "description": "Location for all resources."
       }
     },
-    "vnetName": {
+    "vnetId": {
       "type": "string",
-      "defaultValue": "domain-services-vnet",
       "metadata": {
         "description": "Virtual Network Name"
       }
     },
-    "aadsSubnetName": {
+    "aadsSubnetId": {
       "type": "string",
-      "defaultValue": "domain-services-subnet",
       "metadata": {
         "description": "Virtual Network Name"
       }
@@ -36,16 +34,16 @@
 },
 "resources": [
     {
-      "type": "Microsoft.AAD/DomainServices",
-      "name": "[parameters('domainName')]",
-      "apiVersion": "2017-06-01",
-      "location": "[parameters('location')]",
-      "dependsOn": ["[parameters('vnetName')]"],
-      "properties": {
-        "domainName": "[parameters('domainName')]",
-        "vnetSiteID": "[variables('vnetRefId')]",
-        "subnetId": "[variables('subnetRefId')]"
-      }
+        "type": "Microsoft.AAD/DomainServices",
+        "name": "[parameters('domainName')]",
+        "apiVersion": "2017-06-01",
+        "location": "[parameters('location')]",
+        "dependsOn": ["[parameters('vnetName')]"],
+        "properties": {
+            "domainName": "[parameters('domainName')]",
+            "vnetSiteID": "[parameters('vnetId')]",
+            "subnetId": "[parameters('aadsSubnetId')]"
+        }
     }
 ],
   "outputs": {}
