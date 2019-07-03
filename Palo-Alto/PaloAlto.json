@@ -196,7 +196,8 @@
 			"type": "Microsoft.Compute/availabilitySets",
 			"name": "[parameters('fwAvailabilitySetName')]",
 			"tags": "[variables('tagValues')]",
-			"location": "[resourceGroup().location]"
+			"location": "[resourceGroup().location]",
+			"sku": "Aligned"
 		},
 		{
 			"type": "Microsoft.Network/publicIPAddresses",
