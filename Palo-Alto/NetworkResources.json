@@ -624,7 +624,7 @@
 					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameSQL')))]"
 				}
 			}
-		},
+		}
 	],
 	"outputs": {
 		"vnetName":{
