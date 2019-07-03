@@ -197,12 +197,12 @@
 			"name": "[parameters('fwAvailabilitySetName')]",
 			"tags": "[variables('tagValues')]",
 			"location": "[resourceGroup().location]",
-			"properties": {
-				"platformFaultDomainCount": 3,
-				"platformUpdateDomainCount": "20"
-			},
 			"sku": {
 				"name": "Aligned"
+			},
+			"properties": {
+				"PlatformUpdateDomainCount": 20,
+				"PlatformFaultDomainCount": 2
 			}
 		},
 		{
