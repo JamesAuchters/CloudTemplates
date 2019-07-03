@@ -629,6 +629,28 @@
 					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameSQL')))]"
 				}
 			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('aadsSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('aadsNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameAADS'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('sqlSubnetName'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('sqlSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('AADSNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameAADS')))]"
+				}
+			}
 		}
 	],
 	"outputs": {
