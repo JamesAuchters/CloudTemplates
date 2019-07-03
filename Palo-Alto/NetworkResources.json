@@ -528,7 +528,8 @@
 			"dependsOn": [
 				"[parameters('vnetName')]",
 				"[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate'))]"
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('DMZSubnetName'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('privateSubnetRange')]",
@@ -549,7 +550,8 @@
 			"dependsOn": [
 				"[parameters('vnetName')]",
 				"[concat(parameters('vnetName'), '-', parameters('managementNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement'))]"
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('privateSubnetName'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('managementSubnetRange')]",
@@ -570,7 +572,8 @@
 			"dependsOn": [
 				"[parameters('vnetName')]",
 				"[concat(parameters('vnetName'), '-', parameters('gatewayNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNameGateway'))]"
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameGateway'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('managementSubnetName'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('gatewaySubnetRange')]",
@@ -591,7 +594,8 @@
 			"dependsOn": [
 				"[parameters('vnetName')]",
 				"[concat(parameters('vnetName'), '-', parameters('webNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNameWEB'))]"
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameWEB'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('GatewaySubnet'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('webSubnetRange')]",
@@ -612,7 +616,8 @@
 			"dependsOn": [
 				"[parameters('vnetName')]",
 				"[concat(parameters('vnetName'), '-', parameters('SQLNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNameSQL'))]"
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameSQL'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('webSubnetName'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('sqlSubnetRange')]",
