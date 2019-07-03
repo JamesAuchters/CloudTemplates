@@ -121,10 +121,10 @@
                         "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetID.value]"
                     },
                     "DMZSubnetID":{
-                        "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetID.value]"
+                        "value": "[reference('BaseNetworkDeployment').outputs.DMZSubnetID.value]"
                     },
                     "PrivateSubnetID":{
-                        "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetID.value]"
+                        "value": "[reference('BaseNetworkDeployment').outputs.privateSubnetID.value]"
                     },
                     "mgmtSubnetName":{
                         "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetName.value]"
@@ -153,29 +153,18 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "name": "AzureADDeployment",
-            "resourceGroup": "NETWORK-RG01",
+            "name": "KeyVaultDeployment",
+            "resourceGroup": "KEYVAULT-RG01",
             "dependsOn": [
-                "BaseNetworkDeployment",
-                "FirewallDeployment"
+                "ResourceGroups"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/AzureADDS.json",
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/keyvault.json",
                     "contentVersion":"1.0.0.0"
                 },
-                "parameters":{
-                    "aadsSubnetId": {
-                        "value": "[reference('BaseNetworkDeployment').outputs.aadsSubnetID.value]"
-                    },
-                    "vnetId": {
-                        "value": "[reference('BaseNetworkDeployment').outputs.vnetId.value]"
-                    },
-                    "domainName":{
-                        "value": "[parameters('aadsDomainName')]"
-                    }
-                }
+                "parameters":{}
             }
         }
     ],

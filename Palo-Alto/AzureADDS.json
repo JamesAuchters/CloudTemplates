@@ -28,10 +28,7 @@
       }
     }
 },
-"variables": {
-    "vnetRefId": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
-    "subnetRefId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('aadsSubnetName'))]"
-},
+"variables": {},
 "resources": [
     {
         "type": "Microsoft.AAD/DomainServices",
