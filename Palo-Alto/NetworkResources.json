@@ -217,7 +217,7 @@
 		},
 		"webSubnetName": {
 			"type": "string",
-			"defaultValue": "WEB",
+			"defaultValue": "Web",
 			"metadata": {
 				"description": "Name for web subnet."
 			}
