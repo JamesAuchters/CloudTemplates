@@ -528,7 +528,7 @@
 			"dependsOn": [
 				"[parameters('vnetName')]",
 				"[concat(parameters('vnetName'), '-', parameters('gatewayNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableGateway'))]"
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameGateway'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('gatewaySubnetRange')]",

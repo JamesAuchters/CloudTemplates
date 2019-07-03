@@ -5,7 +5,6 @@
 	"parameters": {
         "DeploymentLocation": {
             "type": "string",
-            "DefaultValue": "australiaeast",
             "allowedValues": [
                 "australiasoutheast",
                 "australiaeast"
