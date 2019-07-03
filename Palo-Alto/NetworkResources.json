@@ -68,6 +68,20 @@
 				"description": "The suffix to be added to the gateway RT name."
 			}
 		},
+		"sqlNSGName": {
+			"type": "string",
+			"DefaultValue": "SQLNSG",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ NSG name."
+			}
+		},
+		"webNSGName": {
+			"type": "string",
+			"DefaultValue": "WEBNSG",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ NSG name."
+			}
+		},
 		"DMZNSGName": {
 			"type": "string",
 			"DefaultValue": "DMZNSG",
@@ -169,6 +183,26 @@
 			"tags": {},
 			"properties": {},
 			"resources": []
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('sqlNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('webNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
 		},
 		{
 			"apiVersion": "2018-08-01",

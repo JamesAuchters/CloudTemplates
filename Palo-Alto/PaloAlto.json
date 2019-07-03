@@ -246,6 +246,7 @@
 		{
 			"type": "Microsoft.Network/networkInterfaces",
 			"name": "[concat(variables('fwnicName'), '01')]",
+			"apiVersion":"2015-06-15",
 			"location": "[resourceGroup().location]",
 			"dependsOn": [
 				"[concat('Microsoft.Network/publicIPAddresses/', variables('fwPubIPName'))]"
@@ -294,6 +295,7 @@
 			"type": "Microsoft.Network/networkInterfaces",
 			"name": "[concat(variables('fwnicName'), '02')]",
 			"location": "[resourceGroup().location]",
+			"apiVersion":"2015-06-15",
 			"tags": "[variables('tagValues')]",
 			"properties": {
 				"enableIPForwarding": true,
@@ -335,6 +337,7 @@
 		{
 			"type": "Microsoft.Network/networkInterfaces",
 			"name": "[concat(variables('fwnicName'), '03')]",
+			"apiVersion":"2015-06-15",
 			"location": "[resourceGroup().location]",
 			"tags": "[variables('tagValues')]",
 			"properties": {
