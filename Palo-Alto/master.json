@@ -46,22 +46,6 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "name": "CloudShellStorage",
-            "resourceGroup": "CLOUDSHELL-RG01",
-            "dependsOn": [
-                "ResourceGroups"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/CloudShell.json",
-                    "contentVersion":"1.0.0.0"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2018-05-01",
             "name": "AnalyticsWorkspace",
             "resourceGroup": "ANALYTICS-RG01",
             "dependsOn": [
