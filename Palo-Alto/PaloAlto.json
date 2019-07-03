@@ -197,7 +197,13 @@
 			"name": "[parameters('fwAvailabilitySetName')]",
 			"tags": "[variables('tagValues')]",
 			"location": "[resourceGroup().location]",
-			"sku": "Aligned"
+			"properties": {
+				"platformFaultDomainCount": 3,
+				"platformUpdateDomainCount": "20"
+			},
+			"sku": {
+				"name": "Aligned"
+			}
 		},
 		{
 			"type": "Microsoft.Network/publicIPAddresses",
