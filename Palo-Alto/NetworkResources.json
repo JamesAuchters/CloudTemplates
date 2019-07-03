@@ -594,7 +594,7 @@
 				"[concat(parameters('vnetName'), '-', parameters('routeTableNameWEB'))]"
 			],
 			"properties": {
-				"addressPrefix": "[parameters('managementSubnetRange')]",
+				"addressPrefix": "[parameters('webSubnetRange')]",
 				"networkSecurityGroup": {
 					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('WEBNSGName')))]",
 					"location": "parameters('rgLocation')"
@@ -615,7 +615,7 @@
 				"[concat(parameters('vnetName'), '-', parameters('routeTableNameSQL'))]"
 			],
 			"properties": {
-				"addressPrefix": "[parameters('managementSubnetRange')]",
+				"addressPrefix": "[parameters('sqlSubnetRange')]",
 				"networkSecurityGroup": {
 					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('SQLNSGName')))]",
 					"location": "parameters('rgLocation')"

@@ -54,7 +54,7 @@
         },
         "templateLocation": {
             "type": "string",
-            "DefaultValue": "australiaeast",
+            "DefaultValue": "australiasoutheast",
             "allowedValues": [
                 "australiasoutheast",
                 "australiaeast"
