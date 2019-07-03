@@ -215,6 +215,16 @@
 		{
 			"apiVersion": "2018-08-01",
 			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('gatewayNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
 			"name": "[concat(parameters('vnetName'), '-', parameters('aadsNSGName'))]",
 			"tags": "[variables('tagValues')]",
 			"location": "[parameters('location')]",
@@ -376,6 +386,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'),'/',parameters('DMZSubnetName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate'))]"
 			],
@@ -397,6 +408,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'),'/',parameters('privateSubnetName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('managementNSGName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement'))]"
 			],
@@ -418,10 +430,16 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[parameters('managementSubnetName')]"
+				"[concat(parameters('vnetName'),'/',parameters('managementSubnetName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('gatewayNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableGateway'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('gatewaySubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('gatewayNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
 				"routeTable": {
 					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameGateway')))]"
 				}
