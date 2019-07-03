@@ -147,7 +147,7 @@
 		},
 		"DMZSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.1.0/24",
+			"defaultValue": "10.1.2.0/24",
 			"metadata": {
 				"description": "Address range for DMZ subnet"
 			}
@@ -161,7 +161,7 @@
 		},
 		"privateSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.2.0/24",
+			"defaultValue": "10.1.3.0/24",
 			"metadata": {
 				"description": "Address range for private subnet"
 			}
@@ -175,16 +175,58 @@
 		},
 		"managementSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.3.0/24",
+			"defaultValue": "10.1.1.0/24",
 			"metadata": {
 				"description": "Address range for management subnet"
 			}
 		},
 		"gatewaySubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.4.0/24",
+			"defaultValue": "10.1.0.0/24",
 			"metadata": {
 				"description": "Address range for gateway subnet"
+			}
+		},
+		"sqlSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.3.0/24",
+			"metadata": {
+				"description": "Address range for private subnet"
+			}
+		},
+		"webSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.3.0/24",
+			"metadata": {
+				"description": "Address range for private subnet"
+			}
+		},
+		"aadsSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.3.0/24",
+			"metadata": {
+				"description": "Address range for private subnet"
+			}
+		},
+		"sqlSubnetName": {
+			"type": "string",
+			"defaultValue": "Management",
+			"metadata": {
+				"description": "Name for sql subnet."
+			}
+		},
+		"webSubnetName": {
+			"type": "string",
+			"defaultValue": "Management",
+			"metadata": {
+				"description": "Name for web subnet."
+			}
+		},
+		"aadsSubnetName": {
+			"type": "string",
+			"defaultValue": "aads",
+			"metadata": {
+				"description": "Name for aads subnet."
 			}
 		}
 	},
@@ -540,7 +582,49 @@
 					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameGateway')))]"
 				}
 			}
-		}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('webSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('webNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameWEB'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('managementSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('WEBNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameWEB')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('sqlSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('SQLNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameSQL'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('managementSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('SQLNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameSQL')))]"
+				}
+			}
+		},
 	],
 	"outputs": {
 		"vnetName":{
