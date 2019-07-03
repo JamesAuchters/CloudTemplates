@@ -78,14 +78,14 @@
 		},
 		"fwAvailabilitySetName": {
             "type": "string",
-            "defaultValue": "FW-AVSET01",
+            "defaultValue": "PALO-FW-AVSET01",
             "metadata": {
                 "description": "The availability set that the Palo Alto Firewall will be deployed to."
             }
 		},
 		"fwName": {
             "type": "string",
-            "defaultValue": "AZURE-FW",
+            "defaultValue": "PALO-FW",
             "metadata": {
                 "description": "The name used for the Azure Firewall"
             }
