@@ -13,6 +13,12 @@
                 "decription": "The Default Deployment Location (AU South East/AU East)"
             }
         },
+        "aadsDomainName": {
+			"type": "string",
+			"metadata": {
+				"description": "The domain name to be used for Azure ADDS"
+			}
+		},
         "fwAdminPassword": {
 			"type": "securestring",
 			"metadata": {
@@ -140,6 +146,34 @@
                     },
                     "fwAdminPassword" :{
                         "value": "[parameters('fwAdminPassword')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "name": "AzureADDeployment",
+            "resourceGroup": "NETWORK-RG01",
+            "dependsOn": [
+                "BaseNetworkDeployment",
+                "FirewallDeployment"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/AzureADDS.json",
+                    "contentVersion":"1.0.0.0"
+                },
+                "parameters":{
+                    "aadsSubnetId": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.aadsSubnetID.value]"
+                    },
+                    "vnetId": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.vnetId.value]"
+                    },
+                    "domainName":{
+                        "value": "[parameters('aadsDomainName')]"
                     }
                 }
             }
