@@ -595,7 +595,7 @@
 				"[parameters('vnetName')]",
 				"[concat(parameters('vnetName'), '-', parameters('webNSGName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('routeTableNameWEB'))]",
-				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('GatewaySubnet'))]"
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/GatewaySubnet')]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('webSubnetRange')]",
