@@ -192,56 +192,7 @@
 					"domainNameLabel": "[variables('fwPubIPDNSName')]"
 				}
 			},
-			"resources": [
-				{
-					"type": "providers/diagnosticSettings",
-				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
-				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/publicIPAddresses', variables('fwPubIPName') )]"
-				  	],
-				  	"apiVersion": "2017-05-01-preview",
-				  	"properties": {
-						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
-						"logs": [ 
-							{
-								"category": "DDoSProtectionNotifications",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							},
-							{
-								"category": "DDoSMitigationFlowLogs",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							},
-							{
-								"category": "DDoSMitigationReports",
-								"enabled": true,
-								"retentionPolicy": {
-									"days": 30,
-									"enabled": true
-								}
-							}
-						],
-						"metrics": [
-							{
-							  "category": "AllMetrics",
-							  "enabled": true,
-							  "retentionPolicy": {
-								"enabled": true,
-								"days": 30
-							  }
-							}
-						]
-					}
-				}
-			]
+			"resources": []
 		},
 		{
 			"type": "Microsoft.Network/networkInterfaces",
