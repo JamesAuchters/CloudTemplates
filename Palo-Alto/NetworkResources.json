@@ -196,14 +196,14 @@
 		},
 		"webSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.3.0/24",
+			"defaultValue": "10.1.4.0/24",
 			"metadata": {
 				"description": "Address range for private subnet"
 			}
 		},
 		"aadsSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.3.0/24",
+			"defaultValue": "10.1.5.0/24",
 			"metadata": {
 				"description": "Address range for private subnet"
 			}
