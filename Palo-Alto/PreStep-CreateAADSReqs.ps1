@@ -10,7 +10,8 @@ $aadTenantId = "<Active Directory ID>"
 Connect-AzureAD -TenantId $aadTenantId
 
 # Login to your Azure subscription.
-Connect-AzAccount
+Connect-AzAccount -Tenant $aadTenantId
+Select-AzSubscription -SubscriptionId $AzureSubscriptionId
 
 # Create the service principal for Azure AD Domain Services.
 New-AzureADServicePrincipal -AppId "2565bd9d-da50-47d4-8b85-4c97f669dc36"
