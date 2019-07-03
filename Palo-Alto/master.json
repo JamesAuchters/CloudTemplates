@@ -111,6 +111,15 @@
                     "vnetName":{
                         "value": "[reference('BaseNetworkDeployment').outputs.vnetName.value]"
                     },
+                    "mgmtSubnetID":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetID.value]"
+                    },
+                    "DMZSubnetID":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetID.value]"
+                    },
+                    "PrivateSubnetID":{
+                        "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetID.value]"
+                    },
                     "mgmtSubnetName":{
                         "value": "[reference('BaseNetworkDeployment').outputs.MgmtSubnetName.value]"
                     },
