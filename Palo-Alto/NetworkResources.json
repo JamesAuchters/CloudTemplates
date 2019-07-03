@@ -485,7 +485,6 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[concat(parameters('vnetName'),'/',parameters('DMZSubnetName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate'))]"
 			],
@@ -507,7 +506,6 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[concat(parameters('vnetName'),'/',parameters('privateSubnetName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('managementNSGName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement'))]"
 			],
@@ -529,7 +527,6 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[concat(parameters('vnetName'),'/',parameters('managementSubnetName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('gatewayNSGName'))]",
 				"[concat(parameters('vnetName'), '-', parameters('routeTableGateway'))]"
 			],
