@@ -642,7 +642,7 @@
 				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('sqlSubnetName'))]"
 			],
 			"properties": {
-				"addressPrefix": "[parameters('sqlSubnetRange')]",
+				"addressPrefix": "[parameters('aadsSubnetRange')]",
 				"networkSecurityGroup": {
 					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('AADSNSGName')))]",
 					"location": "parameters('rgLocation')"
