@@ -81,7 +81,7 @@
 		},
 		"customerName":{
 			"type": "string",
-			"defaultValue": "Xello",
+			"defaultValue": "xello",
 			"metadata": {
 				"description": "The Customer who this firewall is being deployed to."
 			}
@@ -169,7 +169,7 @@
             "Service":"Azure Firewall"
 		},
 		"fwPubIPName": "[concat(parameters('fwName'), '-PUBIP01')]",
-		"fwPubIPDNSName" : "[concat(parameters('customerName'), '-FWMGMTInterface')]",
+		"fwPubIPDNSName" : "[concat(parameters('customerName'), 'fwinterface')]",
 		"fwnicName": "[concat(parameters('fwName'), '-NIC')]"
 	},
 	"functions": [],
