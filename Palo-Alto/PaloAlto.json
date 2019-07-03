@@ -235,30 +235,7 @@
 					}
 				}]
 			},
-			"resources": [
-				{
-					"type": "providers/diagnosticSettings",
-				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
-				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkInterfaces', concat(variables('fwnicName'), '01'))]"
-				  	],
-				  	"apiVersion": "2017-05-01-preview",
-				  	"properties": {
-						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
-						"metrics": [
-							{
-							  "category": "AllMetrics",
-							  "enabled": true,
-							  "retentionPolicy": {
-								"enabled": true,
-								"days": 30
-							  }
-							}
-						]
-					}
-				}
-			]
+			"resources": []
 		},
 		{
 			"type": "Microsoft.Network/networkInterfaces",
@@ -278,30 +255,7 @@
 					}
 				}]
 			},
-			"resources": [
-				{
-					"type": "providers/diagnosticSettings",
-				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
-				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkInterfaces', concat(variables('fwnicName'), '02'))]"
-				  	],
-				  	"apiVersion": "2017-05-01-preview",
-				  	"properties": {
-						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
-						"metrics": [
-							{
-							  "category": "AllMetrics",
-							  "enabled": true,
-							  "retentionPolicy": {
-								"enabled": true,
-								"days": 30
-							  }
-							}
-						]
-					}
-				}
-			]
+			"resources": []
 		},
 		{
 			"type": "Microsoft.Network/networkInterfaces",
@@ -321,30 +275,72 @@
 					}
 				}]
 			},
-			"resources": [
-				{
-					"type": "providers/diagnosticSettings",
-				  	"name": "[concat('Microsoft.Insights/', 'AllLogsToOMS')]",
-				  	"dependsOn": [
-						"[resourceId('Microsoft.Network/networkInterfaces', concat(variables('fwnicName'), '03'))]"
-				  	],
-				  	"apiVersion": "2017-05-01-preview",
-				  	"properties": {
-						"name": "NetworkSecurityGroupEvent",
-						"workspaceId": "[variables('OMSWorkspaceResourceId')]",
-						"metrics": [
-							{
-							  "category": "AllMetrics",
-							  "enabled": true,
-							  "retentionPolicy": {
-								"enabled": true,
-								"days": 30
-							  }
-							}
-						]
+			"resources": []
+		},
+		{
+			"type": "Microsoft.Compute/virtualMachines",
+			"name": "[parameters('fwName')]",
+			"location": "[resourceGroup().location]",
+			"tags": "[variables('tagValues')]",
+			"plan": {
+				"name": "[parameters('fwImageSku')]",
+				"product": "[parameters('fwImageOffer')]",
+				"publisher": "[parameters('fwImagePublisher')]"
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'01'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'02'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'03'))]",
+				"[resourceId('Microsoft.Compute/availabilitySets',parameters('fwAvailabilitySetName'))]"
+			],
+			"properties": {
+				"availabilitySet": {
+					"id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('fwAvailabilitySetName'))]"
+				},
+				"hardwareProfile": {
+					"vmSize": "[parameters('fwSize')]"
+				},
+				"osProfile": {
+					"computerName": "[parameters('fwName')]",
+					"adminUsername": "[parameters('fwAdminUsername')]",
+					"adminPassword": "[parameters('fwAdminPassword')]"
+				},
+				"storageProfile": {
+					"imageReference": {
+						"publisher": "[parameters('fwImagePublisher')]",
+						"offer": "[parameters('fwImageOffer')]",
+						"version": "[parameters('fwImageVersion')]",
+						"sku": "[parameters('fwImageSku')]"
+					},
+					"osDisk": {
+						"name": "[concat(parameters('fwName'),'-OSDisk')]",
+						"caching": "ReadWrite",
+						"createOption": "FromImage"
 					}
+				},
+				"networkProfile": {
+					"networkInterfaces": [
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'01'))]",
+							"properties": {
+								"primary": true
+							}
+						}, 
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'02'))]",
+							"properties": {
+								"primary": false
+							}
+						}, 
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('fwnicName'),'03'))]",
+							"properties": {
+								"primary": false
+							}
+						}
+					]
 				}
-			]
+			}
 		}
 	],
 	"outputs": {}
