@@ -157,9 +157,9 @@
 	"variables": {
 		"OMSWorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName'))]",
 		"vnetId": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-		"DMZSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('DmzSubnetName') )]",
-		"privateSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('PrivateSubnetName') )]",
-		"managementSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('MgmtSubnetName') )]",
+		"DMZSubnetId": "[concat(variables('vnetID'),'/subnets/',parameters('DmzSubnetName'))]",
+		"privateSubnetId": "[concat(variables('vnetID'),'/subnets/',parameters('privateSubnetName'))]",
+		"managementSubnetId": "[concat(variables('vnetID'),'/subnets/',parameters('mgmtSubnetName'))]",
 		"tagValues": {
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
