@@ -84,7 +84,7 @@
       "CreatedBy": "Xello Australia",
       "Region": "[parameters('location')]",
       "Service":"Azure Key Storage"
-  }
+    }
   },
   "resources": [
     {
