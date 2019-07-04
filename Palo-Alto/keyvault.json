@@ -2,6 +2,13 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
     "keyVaultNamePrefix": {
       "type": "string",
       "defaultValue": "KEYVAULT-",
@@ -69,13 +76,22 @@
     }
   },
   "variables": {
-    "keyvaultName":"[concat(parameters('keyVaultNamePrefix'), uniqueString(resourceGroup().id, deployment().name))]"
+    "keyvaultName":"[concat(parameters('keyVaultNamePrefix'), uniqueString(resourceGroup().id, deployment().name))]",
+    "tagValues": {
+      "EnvironmentType": "PROD",
+      "AvailabilityWindow": "24/7",
+      "MaintenanceWindow": "None",
+      "CreatedBy": "Xello Australia",
+      "Region": "[parameters('location')]",
+      "Service":"Azure Key Storage"
+  }
   },
   "resources": [
     {
       "type": "Microsoft.KeyVault/vaults",
       "name": "[variables('keyvaultName')]",
       "apiVersion": "2018-02-14",
+      "tags": "[variables('tagValues')]",
       "location": "[parameters('location')]",
       "properties": {
         "enabledForDeployment": "[parameters('enabledForDeployment')]",
