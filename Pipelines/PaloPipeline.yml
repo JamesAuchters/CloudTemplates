@@ -12,3 +12,8 @@ pool:
 steps:
 - script: echo Deploy Palo Alto!
   displayName: 'Build Start Echo'
+
+- task: AzureCLI@1
+  inputs:
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az rg create RG-demo01'
