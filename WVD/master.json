@@ -106,6 +106,33 @@
                 },
                 "parameters":{}
             }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "name": "AzureADDeployment",
+            "resourceGroup": "ACTIVEDIRECTORY-RG01",
+            "dependsOn": [
+                "BaseNetworkDeployment"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/WVD/AzureADDS.json",
+                    "contentVersion":"1.0.0.0"
+                },
+                "parameters":{
+                    "aadsSubnetId": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.aadsSubnetID.value]"
+                    },
+                    "vnetId": {
+                        "value": "[reference('BaseNetworkDeployment').outputs.vnetId.value]"
+                    },
+                    "domainName":{
+                        "value": "[parameters('aadsDomainName')]"
+                    }
+                }
+            }
         }
     ],
 	"outputs": {
