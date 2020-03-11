@@ -1,0 +1,68 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "apiProfile": "2018-06-01-profile",
+    "parameters": {
+        "location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+        },
+        "CloudShellStoragePrefix": {
+			"type": "string",
+			"defaultValue": "cloudshell",
+			"metadata": {
+				"description": "Prefix to be utlised for the cloud shell deployment."
+			}
+        }
+    },
+    "variables": {
+        "CloudShellStorageName":"[concat(parameters('CloudShellStoragePrefix'), uniqueString(resourceGroup().id, deployment().name))]",
+        "tagValues": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('location')]",
+            "Service":"Azure Management"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[variables('CloudShellStorageName')]",
+            "location": "[parameters('location')]",
+            "tags": "[variables('tagValues')]",
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            },
+            "dependsOn": []
+        }
+    ],
+    "outputs": {}
+}

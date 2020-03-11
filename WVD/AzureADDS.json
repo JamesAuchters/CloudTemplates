@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "domainName": {
+      "type": "string",
+      "metadata": {
+        "description": "Domain Name"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "vnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network Name"
+      }
+    },
+    "aadsSubnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network Name"
+      }
+    }
+},
+"variables": {
+  "tagValues": {
+    "EnvironmentType": "PROD",
+    "AvailabilityWindow": "24/7",
+    "MaintenanceWindow": "None",
+    "CreatedBy": "Xello Australia",
+    "Region": "[parameters('location')]",
+    "Service":"Azure ADDS"
+  }
+},
+"resources": [
+  {
+    "type": "Microsoft.AAD/domainServices",
+    "name": "[parameters('domainName')]",
+    "apiVersion": "2017-06-01",
+    "tags": "[variables('tagValues')]",
+    "location": "[parameters('location')]",
+    "properties": {
+      "domainName": "[parameters('domainName')]",
+      "vnetSiteID": "[parameters('vnetId')]",
+      "subnetId": "[parameters('aadsSubnetId')]"
+    }
+  }
+],
+  "outputs": {}
+}

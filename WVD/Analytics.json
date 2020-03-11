@@ -1,0 +1,68 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "apiProfile": "2018-06-01-profile",
+    "parameters": {
+        "workspaceName": {
+            "type": "string",
+            "defaultValue": "OMSWORKSPACE",
+            "metadata": {
+                "description": "Specifies the name of the workspace."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "sku": {
+            "type": "string",
+            "allowedValues": [
+                "Standalone",
+                "PerNode",
+                "PerGB2018"
+            ],
+            "defaultValue": "PerGB2018",
+            "metadata": {
+                "description": "Specifies the service tier of the workspace: Standalone, PerNode, Per-GB"
+            }
+        }
+    },
+    "variables": {
+        "workspaceUniqueName":"[concat(parameters('workspaceName'), '-', uniqueString(resourceGroup().id, deployment().name))]",
+        "tagValues": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('location')]",
+            "Service":"Azure Monitoring"
+        }
+    },
+    "functions": [],
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "name": "[variables('workspaceUniqueName')]",
+            "apiVersion": "2017-04-26-preview",
+            "tags": "[variables('tagValues')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('sku')]"
+                },
+                "features": {
+                    "searchVersion": 1
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "WorkspaceResourceName":{
+            "type": "string",
+            "value": "[variables('workspaceUniqueName')]"
+        }
+    }
+}

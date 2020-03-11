@@ -1,0 +1,615 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"apiProfile": "2018-06-01-profile",
+	"parameters": {
+		"OMSWorkspaceResourceName":{
+			"type": "string",
+			"metadata": {
+				"description": "The resource ID of the workspace which all resources will be onboarded to."
+			}
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
+		"vnetName": {
+			"type": "string",
+			"DefaultValue": "CORE-VNET01",
+			"metadata": {
+				"description": "The base name for a core virtual network"
+			}
+		},
+		"vnetIPRange": {
+			"type": "string",
+			"DefaultValue": "10.1.0.0/16",
+			"metadata": {
+				"description": "The address space for the VNET."
+			}
+		},
+		"vnetDnsAddresses": {
+			"type": "array",
+			"defaultValue": [
+				"1.1.1.1",
+				"9.9.9.9"
+			],
+			"metadata": {
+				"Description": "The DNS address(es) of the DNS Server(s) used by the VNET"
+			}
+		},
+		"routeTableNamePublic": {
+			"type": "string",
+			"DefaultValue": "PUBLIC-RT",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ RT name."
+			}
+		},
+		"routeTableNameAADS": {
+			"type": "string",
+			"DefaultValue": "AADS-RT",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ RT name."
+			}
+		},
+		"routeTableNameRestricted": {
+			"type": "string",
+			"DefaultValue": "RESTRICTED-RT",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ RT name."
+			}
+		},
+		"routeTableNamePrivate": {
+			"type": "string",
+			"DefaultValue": "PRIVATE-RT",
+			"metadata": {
+				"description": "The suffix to be added to the private RT name."
+			}
+		},
+		"routeTableNamemanagement": {
+			"type": "string",
+			"DefaultValue": "MGMT-RT",
+			"metadata": {
+				"description": "The suffix to be added to the management RT name."
+			}
+		},
+		"routeTableNameGateway": {
+			"type": "string",
+			"DefaultValue": "GATEWAY-RT",
+			"metadata": {
+				"description": "The suffix to be added to the gateway RT name."
+			}
+		},
+		"aadsNSGName": {
+			"type": "string",
+			"DefaultValue": "AADS-NSG",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ NSG name."
+			}
+		},
+		"PublicNSGName": {
+			"type": "string",
+			"DefaultValue": "PUBLIC-NSG",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ NSG name."
+			}
+		},
+		"RestrictedNSGName": {
+			"type": "string",
+			"DefaultValue": "DMZNSG",
+			"metadata": {
+				"description": "The suffix to be added to the DMZ NSG name."
+			}
+		},
+		"privateNSGName": {
+			"type": "string",
+			"DefaultValue": "PRIVATENSG",
+			"metadata": {
+				"description": "The suffix to be added to the private NSG name."
+			}
+		},
+		"managementNSGName": {
+			"type": "string",
+			"DefaultValue": "MGMT-NSG",
+			"metadata": {
+				"description": "The suffix to be added to the management NSG name."
+			}
+		},
+		"RestrictedSubnetName": {
+			"type": "string",
+			"defaultValue": "Restricted",
+			"metadata": {
+				"description": "Name for DMZ subnet."
+			}
+		},
+		"RestrictedSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.2.0/24",
+			"metadata": {
+				"description": "Address range for DMZ subnet"
+			}
+		},
+		"privateSubnetName": {
+			"type": "string",
+			"defaultValue": "Private",
+			"metadata": {
+				"description": "Name for private subnet."
+			}
+		},
+		"privateSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.3.0/24",
+			"metadata": {
+				"description": "Address range for private subnet"
+			}
+		},
+		"managementSubnetName": {
+			"type": "string",
+			"defaultValue": "Management",
+			"metadata": {
+				"description": "Name for management subnet."
+			}
+		},
+		"managementSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.1.0/24",
+			"metadata": {
+				"description": "Address range for management subnet"
+			}
+		},
+		"gatewaySubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.0.0/24",
+			"metadata": {
+				"description": "Address range for gateway subnet"
+			}
+		},
+		"PublicSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.4.0/24",
+			"metadata": {
+				"description": "Address range for private subnet"
+			}
+		},
+		"aadsSubnetRange": {
+			"type": "string",
+			"defaultValue": "10.1.6.0/24",
+			"metadata": {
+				"description": "Address range for private subnet"
+			}
+		},
+		"PublicSubnetName": {
+			"type": "string",
+			"defaultValue": "Web",
+			"metadata": {
+				"description": "Name for web subnet."
+			}
+		},
+		"aadsSubnetName": {
+			"type": "string",
+			"defaultValue": "aads",
+			"metadata": {
+				"description": "Name for aads subnet."
+			}
+		}
+	},
+	"variables": {
+		"tagValues": {
+            "EnvironmentType": "PROD",
+            "AvailabilityWindow": "24/7",
+            "MaintenanceWindow": "None",
+            "CreatedBy": "Xello Australia",
+            "Region": "[parameters('location')]",
+            "Service":"Azure Networking"
+		},
+		"networkWatcherName":  "[concat('NetworkWatcher_',parameters('location'))]",
+		"OMSWorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('OMSWorkspaceResourceName'))]",
+		"aadPSRemotingSlicePIPAddresses": [
+			"52.180.179.108",
+			"52.180.177.87",
+			"13.75.105.168",
+			"52.175.18.134",
+			"52.138.68.41",
+			"52.138.65.157",
+			"104.41.159.212",
+			"104.45.138.161",
+			"52.169.125.119",
+			"52.169.218.0",
+			"52.187.19.1",
+			"52.187.120.237",
+			"13.78.172.246",
+			"52.161.110.169",
+			"52.174.189.149",
+			"40.68.160.142",
+			"40.83.144.56",
+			"13.64.151.161"
+		  ],
+		  "aadRDPIPAddresses": [
+			"207.68.190.32/27",
+			"13.106.78.32/27",
+			"13.106.174.32/27",
+			"13.106.4.96/27"
+		  ],
+		  "aadPSRemotingSliceTIPAddresses": [
+			"52.180.183.67",
+			"52.180.181.39",
+			"52.175.28.111",
+			"52.175.16.141",
+			"52.138.70.93",
+			"52.138.64.115",
+			"40.80.146.22",
+			"40.121.211.60",
+			"52.138.143.173",
+			"52.169.87.10",
+			"13.76.171.84",
+			"52.187.169.156",
+			"13.78.174.255",
+			"13.78.191.178",
+			"40.68.163.143",
+			"23.100.14.28",
+			"13.64.188.43",
+			"23.99.93.197"
+		  ]
+	},
+	"functions": [],
+	"resources": [
+		{
+			"name": "[variables('networkWatcherName')]",
+			"type": "Microsoft.Network/networkWatchers",
+			"apiVersion": "2018-11-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"tags": {},
+			"properties": {},
+			"resources": []
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('aadsNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": [
+					{
+						"name": "AllowPSRemoting",
+						"properties": {
+							"protocol": "Tcp",
+							"sourcePortRange": "*",
+							"destinationPortRange": "5986",
+							"sourceAddressPrefixes": "[variables('aadPSRemotingSlicePIPAddresses')]",
+							"destinationAddressPrefix": "*",
+							"access": "Allow",
+							"priority": 301,
+							"direction": "Inbound"
+						}
+					},
+					{
+						"name": "AllowRDP",
+						"properties": {
+							"protocol": "Tcp",
+							"sourcePortRange": "*",
+							"destinationPortRange": "3389",
+							"sourceAddressPrefixes": "[variables('aadRDPIPAddresses')]",
+							"destinationAddressPrefix": "*",
+							"access": "Allow",
+							"priority": 201,
+							"direction": "Inbound"
+						}
+					},
+					{
+						"name": "AllowSyncWithAzureAD",
+						"properties": {
+							"protocol": "Tcp",
+							"sourcePortRange": "*",
+							"destinationPortRange": "443",
+							"sourceAddressPrefix": "*",
+							"destinationAddressPrefix": "*",
+							"access": "Allow",
+							"priority": 101,
+							"direction": "Inbound"
+						}
+					},
+					{
+						"name": "AllowPSRemotingSlice",
+						"properties": {
+							"protocol": "Tcp",
+							"sourcePortRange": "*",
+							"destinationPortRange": "5986",
+							"sourceAddressPrefixes": "[variables('aadPSRemotingSliceTIPAddresses')]",
+							"destinationAddressPrefix": "*",
+							"access": "Allow",
+							"priority": 302,
+							"direction": "Inbound"
+						}
+					}
+				]
+			}
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('PublicNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('RestrictedNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
+		},
+		{
+			"apiVersion": "2018-08-01",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('vnetName'), '-', parameters('managementNSGName'))]",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"securityRules": []
+			}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamePublic'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameAADS'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameRestricted'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamePrivate'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamemanagement'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameGateway'))]",
+			"type": "Microsoft.Network/routeTables",
+			"apiVersion": "2018-08-01",
+			"tags": "[variables('tagValues')]",
+			"location": "[parameters('Location')]",
+			"properties": {}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks",
+			"apiVersion": "2018-08-01",
+			"name": "[parameters('vnetName')]",
+			"tags": "[variables('tagValues')]",
+			"dependsOn": [
+				"[variables('networkWatcherName')]"
+			],
+			"location": "[parameters('location')]",
+			"dependsOn": [],
+			"properties": {
+				"addressSpace": {
+					"addressPrefixes": [
+						"[parameters('vnetIPRange')]"
+					]
+				},
+				"dhcpOptions": {
+					"dnsServers": "[parameters('vnetDnsAddresses')]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('RestrictedSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('RestrictedNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameRestricted'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('RestrictedSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('RestrictedNSGName')))]"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameRestricted')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('privateSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('privateNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('RestrictedSubnetName'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('privateSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('privateNSGName')))]",
+					"location": "parameters('location')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNamePrivate')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('managementSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('managementNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('privateSubnetName'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('managementSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('managementNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNamemanagement')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/','GatewaySubnet')]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameGateway'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('managementSubnetName'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('gatewaySubnetRange')]",
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameGateway')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('PublicSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('PublicNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNamePublic'))]",
+				"[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/GatewaySubnet')]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('PublicSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('PublicNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNamePublic')))]"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"name": "[concat(parameters('vnetName'),'/',parameters('aadsSubnetName'))]",
+			"apiVersion": "2018-08-01",
+			"location": "[parameters('location')]",
+			"dependsOn": [
+				"[parameters('vnetName')]",
+				"[concat(parameters('vnetName'), '-', parameters('aadsNSGName'))]",
+				"[concat(parameters('vnetName'), '-', parameters('routeTableNameAADS'))]"
+			],
+			"properties": {
+				"addressPrefix": "[parameters('aadsSubnetRange')]",
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('AADSNSGName')))]",
+					"location": "parameters('rgLocation')"
+				},
+				"routeTable": {
+					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameAADS')))]"
+				}
+			}
+		}
+	],
+	"outputs": {
+		"vnetName":{
+			"type": "string",
+			"value": "[parameters('vnetName')]"
+		},
+		"vnetId":{
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+		},
+		"MgmtSubnetID":{
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('managementSubnetName'))]"
+		},
+		"DmzSubnetID":{
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('RestrictedSubnetName'))]"
+		},
+		"PrivateSubnetID":{
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('PrivateSubnetName'))]"
+		},
+		"aadsSubnetID":{
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('aadsSubnetName'))]"
+		},
+		"MgmtSubnetName":{
+			"type": "string",
+			"value": "[parameters('managementSubnetName')]"
+		},
+		"PublicSubnetRange":{
+			"type": "string",
+			"value": "[parameters('PublicSubnetRange')]"
+		},
+		"PrivateSubnetName":{
+			"type": "string",
+			"value": "[parameters('privateSubnetName')]"
+		},
+		"MgmtSubnetPrefix": {
+			"type": "string",
+			"value": "[parameters('managementSubnetRange')]"
+		},
+		"DmzSubnetPrefix": {
+			"type": "string",
+			"value": "[parameters('RestrictedSubnetRange')]"
+		},
+		"PrivateSubnetPrefix": {
+			"type": "string",
+			"value": "[parameters('privateSubnetRange')]"
+		}
+	}
+}
