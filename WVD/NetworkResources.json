@@ -98,14 +98,14 @@
 		},
 		"RestrictedNSGName": {
 			"type": "string",
-			"DefaultValue": "DMZNSG",
+			"DefaultValue": "RESTRICTED-NSG",
 			"metadata": {
 				"description": "The suffix to be added to the DMZ NSG name."
 			}
 		},
 		"privateNSGName": {
 			"type": "string",
-			"DefaultValue": "PRIVATENSG",
+			"DefaultValue": "PRIVATE-NSG",
 			"metadata": {
 				"description": "The suffix to be added to the private NSG name."
 			}
@@ -126,7 +126,7 @@
 		},
 		"RestrictedSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.2.0/24",
+			"defaultValue": "10.1.3.0/24",
 			"metadata": {
 				"description": "Address range for DMZ subnet"
 			}
@@ -140,7 +140,7 @@
 		},
 		"privateSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.3.0/24",
+			"defaultValue": "10.1.4.0/24",
 			"metadata": {
 				"description": "Address range for private subnet"
 			}
@@ -168,21 +168,21 @@
 		},
 		"PublicSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.4.0/24",
+			"defaultValue": "10.1.5.0/24",
 			"metadata": {
 				"description": "Address range for private subnet"
 			}
 		},
 		"aadsSubnetRange": {
 			"type": "string",
-			"defaultValue": "10.1.6.0/24",
+			"defaultValue": "10.1.2.0/24",
 			"metadata": {
 				"description": "Address range for private subnet"
 			}
 		},
 		"PublicSubnetName": {
 			"type": "string",
-			"defaultValue": "Web",
+			"defaultValue": "Public",
 			"metadata": {
 				"description": "Name for web subnet."
 			}
