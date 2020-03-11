@@ -31,7 +31,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/ResourceGroup.json",
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/WVD/ResourceGroup.json",
                     "contentVersion":"1.0.0.0"
                 },
                 "parameters": {}
@@ -48,7 +48,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/Analytics.json",
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/WVD/Analytics.json",
                     "contentVersion":"1.0.0.0"
                 }
             }
@@ -64,7 +64,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/NetworkResources.json",
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/WVD/NetworkResources.json",
                     "contentVersion":"1.0.0.0"
                 },
                 "parameters":{
@@ -85,7 +85,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/CloudShell.json",
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/WVD/CloudShell.json",
                     "contentVersion":"1.0.0.0"
                 }
             }
@@ -101,7 +101,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/Palo-Alto/keyvault.json",
+                    "uri":"https://raw.githubusercontent.com/JamesAuchters/CloudTemplates/master/WVD/keyvault.json",
                     "contentVersion":"1.0.0.0"
                 },
                 "parameters":{}
