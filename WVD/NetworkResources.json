@@ -532,8 +532,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[parameters('vnetName')]",
-				"[concat(parameters('vnetName'), '-', parameters('aadsNSGName'))]",
-				"[concat(parameters('vnetName'), '-', parameters('routeTableNameAADS'))]"
+				"[concat(parameters('vnetName'), '-', parameters('aadsNSGName'))]"
 			],
 			"properties": {
 				"addressPrefix": "[parameters('aadsSubnetRange')]",

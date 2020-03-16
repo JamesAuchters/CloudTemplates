@@ -59,7 +59,7 @@
             "name": "BaseNetworkDeployment",
             "resourceGroup": "NETWORK-RG01",
             "dependsOn": [
-                "AnalyticsWorkspace"
+                "AnalyticsWorkspace2"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -69,7 +69,7 @@
                 },
                 "parameters":{
                     "OMSWorkspaceResourceName": {
-                        "value": "[reference('AnalyticsWorkspace').outputs.WorkspaceResourceName.value]"
+                        "value": "[reference('AnalyticsWorkspace2').outputs.WorkspaceResourceName.value]"
                     }
                 }
             }
