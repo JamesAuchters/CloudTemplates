@@ -40,7 +40,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "name": "AnalyticsWorkspace",
+            "name": "AnalyticsWorkspace2",
             "resourceGroup": "ANALYTICS-RG01",
             "dependsOn": [
                 "ResourceGroups"
