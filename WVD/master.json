@@ -40,7 +40,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "name": "AnalyticsWorkspace2",
+            "name": "AnalyticsWorkspace3",
             "resourceGroup": "ANALYTICS-RG01",
             "dependsOn": [
                 "ResourceGroups"
@@ -59,7 +59,7 @@
             "name": "BaseNetworkDeployment",
             "resourceGroup": "NETWORK-RG01",
             "dependsOn": [
-                "AnalyticsWorkspace2"
+                "AnalyticsWorkspace3"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -69,7 +69,7 @@
                 },
                 "parameters":{
                     "OMSWorkspaceResourceName": {
-                        "value": "[reference('AnalyticsWorkspace2').outputs.WorkspaceResourceName.value]"
+                        "value": "[reference('AnalyticsWorkspace3').outputs.WorkspaceResourceName.value]"
                     }
                 }
             }
