@@ -54,7 +54,7 @@
         },
         "templateLocation": {
             "type": "string",
-            "DefaultValue": "australiasoutheast",
+            "DefaultValue": "australiaeast",
             "allowedValues": [
                 "australiasoutheast",
                 "australiaeast"
@@ -65,7 +65,7 @@
         },
         "templateLocation2": {
             "type": "string",
-            "DefaultValue": "australiasoutheast",
+            "DefaultValue": "australiaeast",
             "allowedValues": [
                 "australiasoutheast",
                 "australiaeast",
@@ -81,14 +81,14 @@
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
             "MaintenanceWindow": "None",
-            "CreatedBy": "Xello Australia",
+            "CreatedBy": "Modex Australia",
             "Region": "[parameters('templateLocation')]"
         },
         "tagValues2": {
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
             "MaintenanceWindow": "None",
-            "CreatedBy": "Xello Australia",
+            "CreatedBy": "Modex Australia",
             "Region": "[parameters('templateLocation2')]"
         }
     },

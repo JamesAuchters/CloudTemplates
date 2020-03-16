@@ -47,13 +47,6 @@
 				"description": "The suffix to be added to the DMZ RT name."
 			}
 		},
-		"routeTableNameAADS": {
-			"type": "string",
-			"DefaultValue": "AADS-RT",
-			"metadata": {
-				"description": "The suffix to be added to the DMZ RT name."
-			}
-		},
 		"routeTableNameRestricted": {
 			"type": "string",
 			"DefaultValue": "RESTRICTED-RT",
@@ -163,7 +156,7 @@
 			"type": "string",
 			"defaultValue": "10.1.0.0/24",
 			"metadata": {
-				"description": "Address range for gateway subnet"
+								"description": "Address range for gateway subnet"
 			}
 		},
 		"PublicSubnetRange": {
@@ -200,7 +193,7 @@
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
             "MaintenanceWindow": "None",
-            "CreatedBy": "Xello Australia",
+            "CreatedBy": "Modex Australia",
             "Region": "[parameters('location')]",
             "Service":"Azure Networking"
 		},
@@ -370,14 +363,6 @@
 		},
 		{
 			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNamePublic'))]",
-			"type": "Microsoft.Network/routeTables",
-			"apiVersion": "2018-08-01",
-			"tags": "[variables('tagValues')]",
-			"location": "[parameters('Location')]",
-			"properties": {}
-		},
-		{
-			"name": "[concat(parameters('vnetName'), '-',parameters('routeTableNameAADS'))]",
 			"type": "Microsoft.Network/routeTables",
 			"apiVersion": "2018-08-01",
 			"tags": "[variables('tagValues')]",
@@ -555,9 +540,6 @@
 				"networkSecurityGroup": {
 					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('vnetName'), '-', parameters('AADSNSGName')))]",
 					"location": "parameters('rgLocation')"
-				},
-				"routeTable": {
-					"id": "[resourceId('Microsoft.Network/routeTables', concat(parameters('vnetName'), '-', parameters('routeTableNameAADS')))]"
 				}
 			}
 		}

@@ -182,7 +182,7 @@
             "EnvironmentType": "PROD",
             "AvailabilityWindow": "24/7",
             "MaintenanceWindow": "None",
-            "CreatedBy": "Xello Australia",
+            "CreatedBy": "Modex Australia",
             "Region": "[parameters('location')]",
             "Service":"Azure Firewall"
 		},

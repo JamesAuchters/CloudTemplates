@@ -1,10 +1,10 @@
 # Change the following values to match your deployment.
-$AaddsAdminUserUpn = "<ADMIN NAME - Office 365>"
-$AzureSubscriptionId = "YOUR_AZURE_SUBSCRIPTION_ID"
-$ManagedDomainName = "<AADS Domain Name>"
+$AaddsAdminUserUpn = "<USERNAME>"
+$AzureSubscriptionId = "<GUID>"
+$ManagedDomainName = "ad.contoso.com"
 $ResourceGroupName = "ACTIVEDIRECTORY-RG01"
-$AzureLocation = "australiasoutheast"
-$aadTenantId = "<Active Directory ID>"
+$AzureLocation = "australiaeast"
+$aadTenantId = "<DATA>"
 
 # Connect to your Azure Account.
 Connect-AzureAD -TenantId $aadTenantId
